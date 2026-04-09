@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCOOPER - Helados Artesanales</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="header-scooper">
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">🍦</div>
+                <div class="logo-text">SCOO<span>PER</span></div>
+            </div>
+
+            <div class="header-content">
+                <nav class="navigation">
+                    <ul>
+                        <li><a href="sabores.html">Sabores</a></li>
+                        <li><a href="nosotros.html">Nosotros</a></li>
+                        <li><a href="preguntasfrecuentes.html">Preguntas Frecuentes</a></li>
+                    </ul>
+                </nav>
+
+                <div class="auth-buttons" id="authButtons">
+                    <button class="btn-login" id="loginBtn">Ingresar</button>
+                    <button class="btn-signup" id="signupBtn">Crear Cuenta</button>
+                </div>
+
+                <div class="user-profile" id="userProfile">
+                    <div class="user-avatar" id="userAvatar"></div>
+                    <div class="user-info">
+                        <div class="user-name" id="userName"></div>
+                        <div class="user-email" id="userEmail"></div>
+                    </div>
+                    <button class="logout-btn" id="logoutBtn">Salir</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <p>Tu <b>scoop</b> favorito</p>
+        <p class="subtitle">Helados Artesanales Premium</p>
+        <img src="principal.png" alt="Principal Scooper">
+    </main>
+
+    <footer>
+        <div class="container">
+        </div>
+    </footer>
+
+    <!-- MODAL AUTH -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Ingresar</h2>
+                <button class="close-btn" id="closeBtn">&times;</button>
+            </div>
+
+            <form id="authForm">
+                <div class="form-group">
+                    <input type="text" id="username" placeholder="Usuario">
+                </div>
+
+                <div class="form-group signup-only" id="emailGroup">
+                    <input type="email" id="email" placeholder="Correo electrónico">
+                </div>
+
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Contraseña">
+                </div>
+
+                <div class="form-group signup-only" id="confirmPasswordGroup">
+                    <input type="password" id="confirmPassword" placeholder="Confirmar contraseña">
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">Ingresar</button>
+            </form>
+
+            <div class="toggle-form">
+                <span id="toggleText">¿No tienes cuenta? </span>
+                <button id="toggleBtn">Crear una</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
