@@ -1,92 +1,78 @@
 <!DOCTYPE html>
-<html lang="es-AR">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SCOOPER - Helados Artesanales</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-    <header class="header-scooper">
+    <!-- Header con navegación -->
+    <header class="header">
         <div class="container">
             <div class="logo">
-                <div class="logo-icon">🍦</div>
-                <div class="logo-text">SCOO<span>PER</span></div>
+                <img src="LOGO.png" alt="SCOOPER Logo" class="logo-img">
+                <h1>SCOOPER</h1>
             </div>
-
-            <div class="header-content">
-                <nav class="navigation">
-                    <ul>
-                        <li><a href="sabores.html">Sabores</a></li>
-                        <li><a href="nosotros.html">Nosotros</a></li>
-                        <li><a href="preguntasfrecuentes.html">Preguntas Frecuentes</a></li>
-                    </ul>
-                </nav>
-
-                <div class="auth-buttons" id="authButtons">
-                    <button class="btn-login" id="loginBtn">Ingresar</button>
-                    <button class="btn-signup" id="signupBtn">Crear Cuenta</button>
-                </div>
-
-                <div class="user-profile" id="userProfile">
-                    <div class="user-avatar" id="userAvatar"></div>
-                    <div class="user-info">
-                        <div class="user-name" id="userName"></div>
-                        <div class="user-email" id="userEmail"></div>
-                    </div>
-                    <button class="logout-btn" id="logoutBtn">Salir</button>
-                </div>
-            </div>
+            <nav class="nav">
+                <ul class="nav-menu">
+                    <li><a href="#inicio" class="nav-link">Inicio</a></li>
+                    <li><a href="#productos" class="nav-link">Productos</a></li>
+                    <li><a href="#nosotros" class="nav-link">Nosotros</a></li>
+                    <li><a href="#contacto" class="nav-link">Contacto</a></li>
+                </ul>
+            </nav>
+            <button class="carrito-btn" id="carritoBtn">
+                🛒 <span id="cantidadCarrito">0</span>
+            </button>
         </div>
     </header>
 
-    <main>
-        <p>Tu <b>scoop</b> favorito</p>
-        <p class="subtitle">Helados Artesanales Premium</p>
-        <img src="principal.png" alt="Principal Scooper">
-    </main>
-
-    <footer>
-        <div class="container">
+    <!-- Sección principal (hero) -->
+    <section class="hero" id="inicio">
+        <div class="hero-content">
+            <h2>Helados Artesanales Premium</h2>
+            <p>Descubre nuestros deliciosos sabores únicos</p>
+            <button class="btn-primario" id="btnVerProductos">
+                Ver Productos
+            </button>
         </div>
-    </footer>
+    </section>
 
-    <!-- MODAL AUTH -->
-    <div class="modal" id="authModal">
+    <!-- Sección de productos -->
+    <section class="productos" id="productos">
+        <div class="container">
+            <h2 class="seccion-titulo">Nuestros Sabores</h2>
+            <div class="grid-productos" id="gridProductos">
+                <!-- Los productos se cargarán dinámicamente desde JSON -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Carrito modal -->
+    <div class="modal" id="modalCarrito">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modalTitle">Ingresar</h2>
-                <button class="close-btn" id="closeBtn">&times;</button>
+            <span class="cerrar" id="cerrarModal">&times;</span>
+            <h2>Mi Carrito</h2>
+            <div class="carrito-items" id="carritoItems">
+                <!-- Los items del carrito se mostrarán aquí -->
             </div>
-
-            <form id="authForm">
-                <div class="form-group">
-                    <input type="text" id="username" placeholder="Usuario">
-                </div>
-
-                <div class="form-group signup-only" id="emailGroup">
-                    <input type="email" id="email" placeholder="Correo electrónico">
-                </div>
-
-                <div class="form-group">
-                    <input type="password" id="password" placeholder="Contraseña">
-                </div>
-
-                <div class="form-group signup-only" id="confirmPasswordGroup">
-                    <input type="password" id="confirmPassword" placeholder="Confirmar contraseña">
-                </div>
-
-                <button type="submit" class="submit-btn" id="submitBtn">Ingresar</button>
-            </form>
-
-            <div class="toggle-form">
-                <span id="toggleText">¿No tienes cuenta? </span>
-                <button id="toggleBtn">Crear una</button>
+            <div class="carrito-total">
+                <h3>Total: $<span id="totalCarrito">0.00</span></h3>
             </div>
+            <button class="btn-primario btn-comprar" id="btnComprar">Comprar</button>
         </div>
     </div>
 
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 SCOOPER - Todos los derechos reservados</p>
+            <p>Elaborado con 💜 para los amantes del helado</p>
+        </div>
+    </footer>
+
+    <!-- Script -->
     <script src="script.js"></script>
 </body>
 </html>
