@@ -2,6 +2,67 @@
 let carrito = [];
 let productos = [];
 
+// ===== DATOS DE PRODUCTOS =====
+// Array de productos con toda la información necesaria
+const datosProductos = [
+    {
+        "id": 1,
+        "nombre": "Chocolate SCOOPER",
+        "descripcion": "Chocolate belga de alta calidad, intenso y delicioso",
+        "precio": 5.00,
+        "imagen": "chocoscooper.png"
+    },
+    {
+        "id": 2,
+        "nombre": "Pistacho Siciliano",
+        "descripcion": "Pistacho importado, sabor único y sofisticado",
+        "precio": 5.75,
+        "imagen": "pistachosic.png"
+    },
+    {
+        "id": 3,
+        "nombre": "Mango Tropical",
+        "descripcion": "Mango maduro con sabor tropical intenso",
+        "precio": 4.90,
+        "imagen": "mango.png"
+    },
+    {
+        "id": 4,
+        "nombre": "Dubaint",
+        "descripcion": "Sabor único y premium de Dubaint",
+        "precio": 6.00,
+        "imagen": "dubaint.png"
+    },
+    {
+        "id": 5,
+        "nombre": "Principal",
+        "descripcion": "Nuestro sabor principal y estrella",
+        "precio": 5.50,
+        "imagen": "principal.png"
+    },
+    {
+        "id": 6,
+        "nombre": "Chocos Cooper",
+        "descripcion": "Versión especial de chocolate con sorpresas",
+        "precio": 5.25,
+        "imagen": "chocoscooper.png"
+    },
+    {
+        "id": 7,
+        "nombre": "DDL",
+        "descripcion": "Sabor exclusivo DDL",
+        "precio": 5.50,
+        "imagen": "ddl.png"
+    },
+    {
+        "id": 8,
+        "nombre": "Mango Deluxe",
+        "descripcion": "Mango premium seleccionado",
+        "precio": 5.15,
+        "imagen": "mango.png"
+    }
+];
+
 // ===== ELEMENTOS DEL DOM =====
 const gridProductos = document.getElementById('gridProductos');
 const modalCarrito = document.getElementById('modalCarrito');
@@ -14,17 +75,12 @@ const btnComprar = document.getElementById('btnComprar');
 const btnVerProductos = document.getElementById('btnVerProductos');
 const seccionProductos = document.getElementById('productos');
 
-// ===== CARGAR DATOS DEL JSON =====
-// Función para cargar los productos desde el archivo JSON
-async function cargarProductos() {
-    try {
-        const respuesta = await fetch('data.json');
-        const datos = await respuesta.json();
-        productos = datos.productos;
-        mostrarProductos();
-    } catch (error) {
-        console.error('Error al cargar los productos:', error);
-    }
+// ===== CARGAR DATOS DE PRODUCTOS =====
+// Función para cargar los productos desde el array de datos
+function cargarProductos() {
+    // Asignar directamente los datos del array
+    productos = datosProductos;
+    mostrarProductos();
 }
 
 // ===== MOSTRAR PRODUCTOS =====

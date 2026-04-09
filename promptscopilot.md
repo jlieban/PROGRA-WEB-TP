@@ -217,3 +217,54 @@ La web ahora tiene una **estética minimalista elegante y sofisticada**, con:
 - 🎯 Coherencia visual entre logo, imágenes y diseño
 - 💜 Tonos suaves que transmiten calidad artesanal
 
+---
+
+## 7. Integración de JSON en JavaScript
+**Prompt:** "El json debe estar dentro del javascript"
+
+**Respuesta:** Se movió toda la información de productos del archivo `data.json` directamente al archivo `script.js`.
+
+### Cambios realizados:
+
+#### script.js
+- ✅ Agregado array `datosProductos` con todos los productos
+- ✅ Eliminada función `async` en `cargarProductos()`
+- ✅ Cambio a carga síncrona directa desde el array
+- ✅ Mantiene la misma estructura de datos
+
+#### Estructura del array:
+```javascript
+const datosProductos = [
+    {
+        "id": 1,
+        "nombre": "Chocolate SCOOPER",
+        "descripcion": "Chocolate belga de alta calidad, intenso y delicioso",
+        "precio": 5.00,
+        "imagen": "chocoscooper.png"
+    },
+    // ... más productos
+];
+```
+
+#### Función actualizada:
+```javascript
+function cargarProductos() {
+    // Asignar directamente los datos del array
+    productos = datosProductos;
+    mostrarProductos();
+}
+```
+
+### Ventajas:
+- ✅ Menos peticiones HTTP (mejor rendimiento)
+- ✅ Datos siempre disponibles
+- ✅ Estructura más simple
+- ✅ No requiere `fetch()` ni `async/await`
+- ✅ Archivos más organizados
+
+### Archivos afectados:
+- **script.js**: Contiene ahora los datos integrados
+- **data.json**: Ya no es necesario (puede eliminarse)
+- **index.html**: Sin cambios
+- **style.css**: Sin cambios
+
