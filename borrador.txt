@@ -1,0 +1,613 @@
+-HTML-
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCOOPER - Helados Artesanales</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="header-scooper">
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">🍦</div>
+                <div class="logo-text">SCOO<span>PER</span></div>
+            </div>
+
+            <div class="header-content">
+                <nav class="navigation">
+                    <ul>
+                        <li><a href="sabores.html">Sabores</a></li>
+                        <li><a href="nosotros.html">Nosotros</a></li>
+                        <li><a href="preguntasfrecuentes.html">Preguntas Frecuentes</a></li>
+                    </ul>
+                </nav>
+
+                <div class="auth-buttons" id="authButtons">
+                    <button class="btn-login" id="loginBtn">Ingresar</button>
+                    <button class="btn-signup" id="signupBtn">Crear Cuenta</button>
+                </div>
+
+                <div class="user-profile" id="userProfile">
+                    <div class="user-avatar" id="userAvatar"></div>
+                    <div class="user-info">
+                        <div class="user-name" id="userName"></div>
+                        <div class="user-email" id="userEmail"></div>
+                    </div>
+                    <button class="logout-btn" id="logoutBtn">Salir</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <p>Tu <b>scoop</b> favorito</p>
+        <p class="subtitle">Helados Artesanales Premium</p>
+        <img src="principal.png" alt="Principal Scooper">
+    </main>
+
+    <footer>
+        <div class="container">
+        </div>
+    </footer>
+
+    <!-- MODAL AUTH -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Ingresar</h2>
+                <button class="close-btn" id="closeBtn">&times;</button>
+            </div>
+
+            <form id="authForm">
+                <div class="form-group">
+                    <input type="text" id="username" placeholder="Usuario">
+                </div>
+
+                <div class="form-group signup-only" id="emailGroup">
+                    <input type="email" id="email" placeholder="Correo electrónico">
+                </div>
+
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Contraseña">
+                </div>
+
+                <div class="form-group signup-only" id="confirmPasswordGroup">
+                    <input type="password" id="confirmPassword" placeholder="Confirmar contraseña">
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">Ingresar</button>
+            </form>
+
+            <div class="toggle-form">
+                <span id="toggleText">¿No tienes cuenta? </span>
+                <button id="toggleBtn">Crear una</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+
+-CSS-
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+    line-height: 1.6;
+    color: #2d2d2d;
+    background-color: #ffffff;
+}
+
+.header-scooper {
+    background: white;
+    padding: 25px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    margin-right: 80px;
+}
+
+.logo:hover {
+    opacity: 0.8;
+}
+
+.logo-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #d4a574 0%, #c19a6b 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+    font-weight: 700;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2d2d2d;
+    letter-spacing: 1px;
+}
+
+.logo-text span {
+    color: #d4a574;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 60px;
+    width: 100%;
+}
+
+.navigation ul {
+    display: flex;
+    list-style: none;
+    gap: 80px;
+    flex: 1;
+}
+
+.navigation a {
+    color: #2d2d2d;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.navigation a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #d4a574;
+    transition: width 0.3s ease;
+}
+
+.navigation a:hover {
+    color: #d4a574;
+}
+
+.navigation a:hover::after {
+    width: 100%;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.auth-buttons button {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+.btn-login {
+    background-color: transparent;
+    color: #2d2d2d;
+    border: 1px solid #e5e5e5;
+}
+
+.btn-login:hover {
+    border-color: #d4a574;
+    color: #d4a574;
+    background-color: rgba(212, 165, 116, 0.05);
+}
+
+.btn-signup {
+    background: linear-gradient(135deg, #d4a574 0%, #c19a6b 100%);
+    color: white;
+}
+
+.btn-signup:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(212, 165, 116, 0.25);
+}
+
+.btn-signup:active {
+    transform: translateY(0);
+}
+
+.user-profile {
+    display: none;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-profile.active {
+    display: flex;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #d4a574 0%, #c19a6b 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.user-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2d2d2d;
+}
+
+.user-email {
+    font-size: 12px;
+    color: #888;
+}
+
+.logout-btn {
+    padding: 8px 16px;
+    background-color: transparent;
+    color: #2d2d2d;
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+}
+
+.logout-btn:hover {
+    border-color: #d4a574;
+    color: #d4a574;
+    background-color: rgba(212, 165, 116, 0.05);
+}
+
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 40px;
+    text-align: center;
+}
+
+main > p {
+    font-size: 48px;
+    font-weight: 300;
+    color: #2d2d2d;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+    line-height: 1.2;
+}
+
+main b {
+    font-weight: 700;
+    color: #d4a574;
+}
+
+.subtitle {
+    font-size: 18px;
+    color: #888;
+    margin-bottom: 60px;
+    font-weight: 300;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+main img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    margin-bottom: 80px;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+main img:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 30px 70px rgba(0,0,0,0.15);
+}
+
+footer {
+    background: linear-gradient(135deg, #f8fafb 0%, #ffffff 100%);
+    padding: 80px 40px;
+    margin-top: 80px;
+    border-top: 1px solid #f0f0f0;
+}
+
+footer .container {
+    flex-direction: column;
+    gap: 20px;
+}
+
+.footer-title {
+    font-size: 24px;
+    font-weight: 300;
+    color: #2d2d2d;
+    margin-bottom: 30px;
+    letter-spacing: -0.5px;
+}
+
+/* MODAL STYLES */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal.active {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    background: white;
+    padding: 50px 40px;
+    border-radius: 20px;
+    max-width: 450px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.modal-header h2 {
+    font-size: 28px;
+    font-weight: 300;
+    color: #2d2d2d;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-btn:hover {
+    color: #2d2d2d;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.form-group input {
+    padding: 14px 18px;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    font-size: 15px;
+    background-color: #fafafa;
+    color: #2d2d2d;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+}
+
+.form-group input::placeholder {
+    color: #999;
+    font-weight: 300;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #d4a574;
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.08);
+}
+
+.form-group.signup-only {
+    display: none;
+}
+
+.form-group.signup-only.active {
+    display: flex;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 14px 30px;
+    background: linear-gradient(135deg, #d4a574 0%, #c19a6b 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-top: 10px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(212, 165, 116, 0.25);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+.toggle-form {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #888;
+}
+
+.toggle-form button {
+    background: none;
+    border: none;
+    color: #d4a574;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+}
+
+.toggle-form button:hover {
+    color: #c19a6b;
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        gap: 20px;
+        padding: 0 20px;
+    }
+
+    .header-content {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .navigation ul {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .auth-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .auth-buttons button {
+        flex: 1;
+        max-width: 150px;
+    }
+
+    .user-profile {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    main {
+        padding: 60px 20px;
+    }
+
+    main > p {
+        font-size: 36px;
+    }
+
+    .subtitle {
+        font-size: 14px;
+    }
+
+    footer {
+        padding: 60px 20px;
+    }
+
+    .logo-text {
+        font-size: 20px;
+    }
+
+    .logo-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 20px;
+    }
+
+    .modal-content {
+        padding: 40px 25px;
+        max-width: 100%;
+    }
+
+    .modal-header h2 {
+        font-size: 24px;
+    }
+}
