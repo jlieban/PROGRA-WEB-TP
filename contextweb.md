@@ -7,6 +7,8 @@ Este proyecto es una página web desarrollada con tecnologías básicas del fron
 - CSS
 - JavaScript
 - JSON (utilizado como archivo de datos leído desde JavaScript)
+- React 
+- Capaz despues agrego otras 
 
 ## Objetivo
 Crear una página web clara, funcional y fácil de entender, ideal para aprendizaje y práctica en el contexto de una materia universitaria.
@@ -18,6 +20,7 @@ Quiero una visual minimalista y elegante para que de una sensación de que es un
 Su objetivo es mostrar la variedad de productos para que los usuarios puedan seleccionar los que deseen y los agreguen al carrito para luego poder hacer la compra.
 
 Su objetivo es mostrar información organizada utilizando una estructura simple de frontend, donde los datos se almacenan en un archivo JSON y se leen desde JavaScript para generar contenido dinámico en la página.
+
 
 ## Estructura del proyecto
 - index.html → estructura principal de la página

@@ -1,208 +1,217 @@
-// ===== VARIABLES GLOBALES =====
-let carrito = [];
-let productos = [];
+function crearEstado(inicial) {
+    let valor = inicial;
+    const listeners = [];
 
-// ===== ELEMENTOS DEL DOM =====
-const gridProductos = document.getElementById('gridProductos');
-const modalCarrito = document.getElementById('modalCarrito');
-const carritoBtn = document.getElementById('carritoBtn');
-const cerrarModal = document.getElementById('cerrarModal');
-const carritoItems = document.getElementById('carritoItems');
-const totalCarrito = document.getElementById('totalCarrito');
-const cantidadCarrito = document.getElementById('cantidadCarrito');
-const btnComprar = document.getElementById('btnComprar');
-const btnVerProductos = document.getElementById('btnVerProductos');
-const seccionProductos = document.getElementById('productos');
+    function getValor() { return valor; }
 
-// ===== CARGAR DATOS DEL JSON =====
-// Función para cargar los productos desde el archivo JSON
-async function cargarProductos() {
-    try {
-        const respuesta = await fetch('data.json');
-        const datos = await respuesta.json();
-        productos = datos.productos;
-        mostrarProductos();
-    } catch (error) {
-        console.error('Error al cargar los productos:', error);
+    function setValor(nuevoValor) {
+        valor = nuevoValor;
+        listeners.forEach(listener => listener(valor));
     }
+
+    function suscribir(listener) {
+        listeners.push(listener);
+        return () => {
+            const index = listeners.indexOf(listener);
+            if (index > -1) listeners.splice(index, 1);
+        };
+    }
+
+    return [getValor, setValor, suscribir];
 }
 
-// ===== MOSTRAR PRODUCTOS =====
-// Función para mostrar los productos en el grid
+const [getCarrito, setCarrito, suscribirCarrito] = crearEstado([]);
+
+const datosProductos = [
+    { id: 1, nombre: "Chocolate SCOOPER",     descripcion: "La especialidad de la casa. Chocolate al 60% con una crema de avellanas tostadas y pretzels newyorkinos",                                                                              precio: 10000, imagen: "chocoscooper.png" },
+    { id: 2, nombre: "Pistacho Siciliano",   descripcion: "Con crema de pistacho casera y pistachos caramelizados de origen siciliano con un toque de sal marina",                                                                                precio: 10000, imagen: "pistachosic.png"  },
+    { id: 4, nombre: "Dubaint",              descripcion: "Una reversión del clásico Dubai. Mezcla perfecta de dulce de leche y chocolate con crema de pistachos y un crocante de galleta casera irresistible",                                   precio: 10000, imagen: "dubaint.png"      },
+    { id: 7, nombre: "Dulce de leche magnífico", descripcion: "Con un laminado de chocolate negro y blanco y destellos de dulce de leche natural",                                                                                               precio: 10000, imagen: "ddl.png"          },
+    { id: 8, nombre: "Carlo Mango",          descripcion: "El mejor mango brasilero transformado en el gran sabor del helado argentino",                                                                                                          precio: 10000, imagen: "mango.png"        }
+];
+
+let gridProductos, modalCarrito, carritoBtn, cerrarModal, cerrarOverlay,
+    carritoItems, totalCarrito, cantidadCarrito, btnComprar,
+    btnVerProductos, seccionProductos, toastEl;
+
+function inicializarElementos() {
+    gridProductos    = document.getElementById('gridProductos');
+    modalCarrito     = document.getElementById('modalCarrito');
+    carritoBtn       = document.getElementById('carritoBtn');
+    cerrarModal      = document.getElementById('cerrarModal');
+    cerrarOverlay    = document.getElementById('cerrarOverlay');
+    carritoItems     = document.getElementById('carritoItems');
+    totalCarrito     = document.getElementById('totalCarrito');
+    cantidadCarrito  = document.getElementById('cantidadCarrito');
+    btnComprar       = document.getElementById('btnComprar');
+    btnVerProductos  = document.getElementById('btnVerProductos');
+    seccionProductos = document.getElementById('productos');
+    toastEl          = document.getElementById('toast');
+}
+
+function mostrarToast(mensaje) {
+    toastEl.textContent = mensaje;
+    toastEl.classList.add('visible');
+    setTimeout(() => toastEl.classList.remove('visible'), 2800);
+}
+
 function mostrarProductos() {
     gridProductos.innerHTML = '';
-    
-    productos.forEach(producto => {
+    datosProductos.forEach(producto => {
         const tarjeta = document.createElement('div');
         tarjeta.classList.add('tarjeta-producto');
-        
-        tarjeta.innerHTML = `
-            <img src="${producto.imagen}" alt="${producto.nombre}" class="producto-imagen">
-            <div class="producto-info">
-                <h3 class="producto-nombre">${producto.nombre}</h3>
-                <p class="producto-descripcion">${producto.descripcion}</p>
-                <p class="producto-precio">$${producto.precio.toFixed(2)}</p>
-                <button class="btn-agregar" data-id="${producto.id}">
-                    Agregar al carrito
-                </button>
-            </div>
+
+        const imgWrapper = document.createElement('div');
+        imgWrapper.classList.add('producto-imagen-wrapper');
+
+        const img = document.createElement('img');
+        img.src = producto.imagen;
+        img.alt = producto.nombre;
+        img.classList.add('producto-imagen');
+        img.addEventListener('error', () => {
+            const placeholder = document.createElement('div');
+            placeholder.classList.add('producto-imagen-placeholder');
+            placeholder.textContent = producto.nombre.charAt(0);
+            img.replaceWith(placeholder);
+        });
+
+        const overlay = document.createElement('div');
+        overlay.classList.add('producto-descripcion-overlay');
+        overlay.innerHTML = `<p>${producto.descripcion}</p>`;
+
+        imgWrapper.appendChild(img);
+        imgWrapper.appendChild(overlay);
+
+        const info = document.createElement('div');
+        info.classList.add('producto-info');
+        info.innerHTML = `
+            <h3 class="producto-nombre">${producto.nombre}</h3>
+            <p class="producto-precio">$${producto.precio.toLocaleString('es-AR')}</p>
+            <button class="btn-agregar" data-id="${producto.id}">Agregar al carrito</button>
         `;
-        
+
+        tarjeta.appendChild(imgWrapper);
+        tarjeta.appendChild(info);
         gridProductos.appendChild(tarjeta);
     });
 }
 
-// ===== GESTIÓN DEL CARRITO =====
-// Función para agregar productos al carrito
 function agregarAlCarrito(idProducto) {
-    const producto = productos.find(p => p.id === idProducto);
-    
-    // Buscar si el producto ya existe en el carrito
-    const itemCarrito = carrito.find(item => item.id === idProducto);
-    
-    if (itemCarrito) {
-        // Si existe, aumentar la cantidad
-        itemCarrito.cantidad++;
-    } else {
-        // Si no existe, agregarlo con cantidad 1
-        carrito.push({
-            ...producto,
-            cantidad: 1
-        });
-    }
-    
-    // Actualizar el carrito en la interfaz
-    actualizarCarrito();
+    const producto = datosProductos.find(p => p.id === idProducto);
+    const carritoActual = getCarrito();
+    const itemCarrito = carritoActual.find(item => item.id === idProducto);
+
+    const nuevoCarrito = itemCarrito
+        ? carritoActual.map(item =>
+            item.id === idProducto ? { ...item, cantidad: item.cantidad + 1 } : item
+          )
+        : [...carritoActual, { ...producto, cantidad: 1 }];
+
+    setCarrito(nuevoCarrito);
+    mostrarToast(`${producto.nombre} agregado al carrito`);
 }
 
-// Función para eliminar un producto del carrito
 function eliminarDelCarrito(idProducto) {
-    carrito = carrito.filter(item => item.id !== idProducto);
-    actualizarCarrito();
+    setCarrito(getCarrito().filter(item => item.id !== idProducto));
 }
 
-// Función para actualizar la cantidad de un producto en el carrito
-function actualizarCantidad(idProducto, nuevaCantidad) {
-    if (nuevaCantidad <= 0) {
-        eliminarDelCarrito(idProducto);
-    } else {
-        const item = carrito.find(item => item.id === idProducto);
-        if (item) {
-            item.cantidad = nuevaCantidad;
-        }
-    }
-    actualizarCarrito();
-}
-
-// ===== ACTUALIZAR INTERFAZ DEL CARRITO =====
-// Función para actualizar todo lo relacionado con el carrito
 function actualizarCarrito() {
-    // Actualizar cantidad de items en el botón
-    cantidadCarrito.textContent = carrito.length;
-    
-    // Actualizar vista del carrito modal
+    const carritoActual = getCarrito();
+    const totalItems = carritoActual.reduce((sum, item) => sum + item.cantidad, 0);
+    cantidadCarrito.textContent = totalItems;
     actualizarVistaCarrito();
 }
 
-// Función para actualizar la vista del modal del carrito
 function actualizarVistaCarrito() {
-    // Limpiar contenedor de items
+    const carritoActual = getCarrito();
     carritoItems.innerHTML = '';
-    
-    if (carrito.length === 0) {
-        carritoItems.innerHTML = '<p style="text-align: center; color: #9CA3AF;">El carrito está vacío</p>';
+
+    if (carritoActual.length === 0) {
+        carritoItems.innerHTML = '<p class="carrito-vacio">El carrito está vacío</p>';
         totalCarrito.textContent = '0.00';
         return;
     }
-    
-    // Mostrar cada item del carrito
-    carrito.forEach(item => {
+
+    carritoActual.forEach(item => {
         const div = document.createElement('div');
         div.classList.add('carrito-item');
-        
-        const subtotal = item.precio * item.cantidad;
-        
         div.innerHTML = `
             <div class="carrito-item-info">
                 <h3>${item.nombre}</h3>
-                <p class="carrito-item-cantidad">Cantidad: ${item.cantidad}</p>
+                <div class="cantidad-controles">
+                    <button class="btn-cantidad" data-id="${item.id}" data-accion="decrementar">−</button>
+                    <span>${item.cantidad}</span>
+                    <button class="btn-cantidad" data-id="${item.id}" data-accion="incrementar">+</button>
+                </div>
+                <button class="btn-eliminar" data-id="${item.id}">Eliminar</button>
             </div>
-            <div style="text-align: right;">
-                <p class="carrito-item-precio">$${subtotal.toFixed(2)}</p>
-                <button class="btn-eliminar" data-id="${item.id}" style="background: #EF4444; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">Eliminar</button>
-            </div>
+            <p class="carrito-item-precio">$${(item.precio * item.cantidad).toLocaleString('es-AR')}</p>
         `;
-        
         carritoItems.appendChild(div);
     });
-    
-    // Calcular total
-    const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
-    totalCarrito.textContent = total.toFixed(2);
+
+    const total = carritoActual.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
+    totalCarrito.textContent = total.toLocaleString('es-AR');
 }
 
-// ===== EVENTOS DEL MODAL =====
-// Abrir modal al hacer clic en el botón del carrito
-carritoBtn.addEventListener('click', () => {
+function abrirModal() {
     modalCarrito.style.display = 'block';
     actualizarVistaCarrito();
-});
+}
 
-// Cerrar modal al hacer clic en la X
-cerrarModal.addEventListener('click', () => {
+function cerrarModalFn() {
     modalCarrito.style.display = 'none';
-});
+}
 
-// Cerrar modal al hacer clic fuera del modal-content
-window.addEventListener('click', (event) => {
-    if (event.target === modalCarrito) {
-        modalCarrito.style.display = 'none';
-    }
-});
+function configurarEventos() {
+    carritoBtn.addEventListener('click', abrirModal);
+    cerrarModal.addEventListener('click', cerrarModalFn);
+    cerrarOverlay.addEventListener('click', cerrarModalFn);
 
-// ===== EVENT DELEGATION PARA BOTONES DE PRODUCTOS =====
-// Delegamos los eventos de clic en los botones de productos
-gridProductos.addEventListener('click', (event) => {
-    if (event.target.classList.contains('btn-agregar')) {
-        const idProducto = parseInt(event.target.getAttribute('data-id'));
-        agregarAlCarrito(idProducto);
-    }
-});
+    gridProductos.addEventListener('click', (event) => {
+        if (event.target.classList.contains('btn-agregar')) {
+            agregarAlCarrito(parseInt(event.target.getAttribute('data-id')));
+            return;
+        }
+        const tarjeta = event.target.closest('.tarjeta-producto');
+        if (tarjeta) {
+            const yaSeleccionada = tarjeta.classList.contains('seleccionado');
+            document.querySelectorAll('.tarjeta-producto.seleccionado').forEach(t => t.classList.remove('seleccionado'));
+            if (!yaSeleccionada) tarjeta.classList.add('seleccionado');
+        }
+    });
 
-// ===== EVENT DELEGATION PARA BOTONES DE ELIMINAR DEL CARRITO =====
-// Delegamos los eventos de clic en los botones de eliminar
-carritoItems.addEventListener('click', (event) => {
-    if (event.target.classList.contains('btn-eliminar')) {
-        const idProducto = parseInt(event.target.getAttribute('data-id'));
-        eliminarDelCarrito(idProducto);
-    }
-});
+    carritoItems.addEventListener('click', (event) => {
+        const id = parseInt(event.target.getAttribute('data-id'));
+        if (event.target.classList.contains('btn-eliminar')) {
+            eliminarDelCarrito(id);
+        } else if (event.target.classList.contains('btn-cantidad')) {
+            const accion = event.target.getAttribute('data-accion');
+            const item = getCarrito().find(i => i.id === id);
+            actualizarCantidad(id, accion === 'incrementar' ? item.cantidad + 1 : item.cantidad - 1);
+        }
+    });
 
-// ===== EVENTO BOTÓN VER PRODUCTOS =====
-// Scroll suave a la sección de productos
-btnVerProductos.addEventListener('click', () => {
-    seccionProductos.scrollIntoView({ behavior: 'smooth' });
-});
+    btnVerProductos.addEventListener('click', () => {
+        seccionProductos.scrollIntoView({ behavior: 'smooth' });
+    });
 
-// ===== COMPRA =====
-// Evento del botón comprar
-btnComprar.addEventListener('click', () => {
-    if (carrito.length === 0) {
-        alert('El carrito está vacío');
-        return;
-    }
-    
-    const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
-    alert(`¡Gracias por tu compra! Total: $${total.toFixed(2)}`);
-    
-    // Vaciar carrito
-    carrito = [];
-    actualizarCarrito();
-    modalCarrito.style.display = 'none';
-});
+    btnComprar.addEventListener('click', () => {
+        const carritoActual = getCarrito();
+        if (carritoActual.length === 0) {
+            mostrarToast('El carrito está vacío');
+            return;
+        }
+        const total = carritoActual.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
+        setCarrito([]);
+        cerrarModalFn();
+        mostrarToast(`¡Gracias por tu compra! Total: $${total.toLocaleString('es-AR')}`);
+    });
+}
 
-// ===== INICIALIZAR LA PÁGINA =====
-// Cargar productos cuando la página carga
 document.addEventListener('DOMContentLoaded', () => {
-    cargarProductos();
+    inicializarElementos();
+    configurarEventos();
+    mostrarProductos();
+    suscribirCarrito(() => actualizarCarrito());
 });

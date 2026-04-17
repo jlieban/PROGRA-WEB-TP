@@ -3,57 +3,36 @@
     {
       "id": 1,
       "nombre": "Chocolate SCOOPER",
-      "descripcion": "Chocolate belga de alta calidad, intenso y delicioso",
-      "precio": 5.00,
+      "descripcion": "La especialidad de la casa. Chocolate al 60% con una crema de avellanas tostadas y pretzels newyorkinos",
+      "precio": 10000,
       "imagen": "chocoscooper.png"
     },
     {
       "id": 2,
       "nombre": "Pistacho Siciliano",
-      "descripcion": "Pistacho importado, sabor único y sofisticado",
-      "precio": 5.75,
+      "descripcion": "Con crema de pistacho casera y pistachos caramelizados de origen siciliano con un toque de sal marina",
+      "precio": 10000,
       "imagen": "pistachosic.png"
-    },
-    {
-      "id": 3,
-      "nombre": "Mango Tropical",
-      "descripcion": "Mango maduro con sabor tropical intenso",
-      "precio": 4.90,
-      "imagen": "mango.png"
     },
     {
       "id": 4,
       "nombre": "Dubaint",
-      "descripcion": "Sabor único y premium de Dubaint",
-      "precio": 6.00,
+      "descripcion": "Una reversión del clásico Dubai. Mezcla perfecta de dulce de leche y chocolate con crema de pistachos y un crocante de galleta casera irresistible",
+      "precio": 10000,
       "imagen": "dubaint.png"
     },
     {
-      "id": 5,
-      "nombre": "Principal",
-      "descripcion": "Nuestro sabor principal y estrella",
-      "precio": 5.50,
-      "imagen": "principal.png"
-    },
-    {
-      "id": 6,
-      "nombre": "Chocos Cooper",
-      "descripcion": "Versión especial de chocolate con sorpresas",
-      "precio": 5.25,
-      "imagen": "chocoscooper.png"
-    },
-    {
       "id": 7,
-      "nombre": "DDL",
-      "descripcion": "Sabor exclusivo DDL",
-      "precio": 5.50,
+      "nombre": "Dulce de leche magnífico",
+      "descripcion": "Con un laminado de chocolate negro y blanco y destellos de dulce de leche natural",
+      "precio": 10000,
       "imagen": "ddl.png"
     },
     {
       "id": 8,
-      "nombre": "Mango Deluxe",
-      "descripcion": "Mango premium seleccionado",
-      "precio": 5.15,
+      "nombre": "Carlo Mango",
+      "descripcion": "El mejor mango brasilero transformado en el gran sabor del helado argentino",
+      "precio": 10000,
       "imagen": "mango.png"
     }
   ]
