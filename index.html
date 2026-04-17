@@ -18,7 +18,7 @@
 
             <!-- Logo -->
             <div class="logo">
-                <img src="LOGO.png" alt="SCOOPER — Helados Artesanales" class="logo-img">
+                <span class="logo-texto">SCOOPER</span>
             </div>
 
             <!-- Navegación -->
@@ -47,14 +47,16 @@
 
     <!-- ===== HERO ===== -->
     <section class="hero" id="inicio">
-        <div class="hero-texto">
-            <p class="hero-kicker">— Colección 2026</p>
-            <h1 class="hero-titulo">Cada pote,<br><em>una obra.</em></h1>
-            <p class="hero-bajada">Sabores únicos elaborados con ingredientes seleccionados. Sin artificios. Sin apuros.</p>
-            <button class="btn-ver" id="btnVerProductos">Ver sabores</button>
-        </div>
-        <div class="hero-circulo">
-            <span>SC</span>
+        <div class="hero-inner">
+            <div class="hero-texto">
+                <p class="hero-kicker">— Colección 2026</p>
+                <h1 class="hero-titulo">Cada pote,<br><em>una obra.</em></h1>
+                <p class="hero-bajada">Sabores únicos elaborados con ingredientes seleccionados. Sin artificios. Sin apuros.</p>
+                <button class="btn-ver" id="btnVerProductos">Ver sabores</button>
+            </div>
+            <div class="hero-imagen-wrapper">
+                <img src="principal.png" alt="Helado artesanal SCOOPER" class="hero-imagen-principal">
+            </div>
         </div>
     </section>
 
@@ -93,8 +95,25 @@
     <!-- ===== FOOTER ===== -->
     <footer class="footer" id="footer">
         <div class="container footer-inner">
-            <p class="footer-marca">SCOOPER</p>
-            <p class="footer-copy">© 2026 — Helados Artesanales. Todos los derechos reservados.</p>
+
+            <div class="footer-brand">
+                <p class="footer-marca">SCOOPER</p>
+                <p class="footer-tagline">Helados Artesanales</p>
+            </div>
+
+            <div class="footer-contacto">
+                <p class="footer-contacto-titulo">Contacto</p>
+                <ul class="footer-contacto-lista">
+                    <li><span class="footer-label">Teléfono</span><a href="tel:+541145678901">+54 11 4567-8901</a></li>
+                    <li><span class="footer-label">Email</span><a href="mailto:scooper@gmail.com">scooper@gmail.com</a></li>
+                    <li><span class="footer-label">Instagram</span><a href="https://instagram.com/scooperhelados" target="_blank" rel="noopener">@scooperhelados</a></li>
+                    <li><span class="footer-label">TikTok</span><a href="https://tiktok.com/@scooperhelados" target="_blank" rel="noopener">@scooperhelados</a></li>
+                </ul>
+            </div>
+
+        </div>
+        <div class="container footer-copy-bar">
+            <p class="footer-copy">© 2026 — SCOOPER. Todos los derechos reservados.</p>
         </div>
     </footer>
 
