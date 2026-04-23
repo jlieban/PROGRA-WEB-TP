@@ -1,6 +1,6 @@
 import TarjetaProducto from './TarjetaProducto'
 
-export default function GridProductos({ productos, carrito, onVerDetalle, onAgregar, onActualizarCantidad }) {
+export default function GridProductos({ productos, carrito, onAgregar, onActualizarCantidad }) {
     return (
         <section className="productos" id="sabores">
             <div className="container">
@@ -16,7 +16,6 @@ export default function GridProductos({ productos, carrito, onVerDetalle, onAgre
                                 key={producto.id}
                                 producto={producto}
                                 cantidadEnCarrito={item ? item.cantidad : 0}
-                                onVerDetalle={onVerDetalle}
                                 onAgregar={onAgregar}
                                 onActualizarCantidad={onActualizarCantidad}
                             />

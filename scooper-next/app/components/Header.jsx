@@ -1,15 +1,19 @@
+'use client'
+
+import Link from 'next/link'
+
 export default function Header({ totalItems, onOpenCarrito }) {
     return (
         <header className="header">
             <div className="container header-inner">
                 <div className="logo">
-                    <span className="logo-texto">SCOOPER</span>
+                    <Link href="/" className="logo-texto">SCOOPER</Link>
                 </div>
                 <nav>
                     <ul className="nav-menu">
-                        <li><a href="#inicio" className="nav-link">Inicio</a></li>
-                        <li><a href="#sabores" className="nav-link">Sabores</a></li>
-                        <li><a href="#contacto" className="nav-link">Contacto</a></li>
+                        <li><Link href="/#inicio" className="nav-link">Inicio</Link></li>
+                        <li><Link href="/#sabores" className="nav-link">Sabores</Link></li>
+                        <li><Link href="/#contacto" className="nav-link">Contacto</Link></li>
                     </ul>
                 </nav>
                 <button className="carrito-btn" onClick={onOpenCarrito} aria-label="Abrir carrito">
