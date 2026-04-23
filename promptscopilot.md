@@ -653,6 +653,316 @@ document.addEventListener('DOMContentLoaded', () => {
 
 ---
 
+## 11. Sesión de Rediseño Visual y Migración a React (Create React App)
+
+---
+
+### 11.1 Reemplazo del círculo del hero por imagen principal
+**Prompt:** "Saca ese círculo y que en el inicio figure la imagen principal.png"
+
+**Cambios:**
+- `index.html`: reemplazado `<div class="hero-circulo">` por `<div class="hero-imagen-wrapper"><img src="principal.png">`
+- `style.css`: eliminados estilos `.hero-circulo` y `.hero-circulo-logo`, creados `.hero-imagen-wrapper` y `.hero-imagen-principal`
+
+---
+
+### 11.2 Reorganización del layout general
+**Prompt:** "Ordena la web. Que se vea simétrica, organizada, entendible y amigable."
+
+**Problema:** El hero tenía `padding: 5rem 2rem 5rem 8rem` (asimétrico) y no usaba el mismo sistema de centrado que el resto de la página.
+
+**Solución:**
+- `index.html`: agregado `<div class="hero-inner">` dentro del hero como contenedor centrado
+- `style.css`:
+  - `.hero` pasa a ser solo el wrapper con fondo
+  - `.hero-inner` maneja el grid con `max-width: 1180px`, `margin: 0 auto`, `padding: 5rem 2rem`, `grid-template-columns: 1fr 1fr`
+  - Grid de productos: reemplazado truco `gap: 1px + background` por `gap: 1.5rem` con bordes individuales por tarjeta
+
+---
+
+### 11.3 Logo de texto en header
+**Prompt:** "En vez de esa imagen en el logo, podrías poner SCOOPER con la tipografía de los potes?"
+
+**Cambios:**
+- `index.html`: `<img src="LOGO.png">` reemplazado por `<span class="logo-texto">SCOOPER</span>`
+- `style.css`: agregado `.logo-texto` con `font-family: var(--fuente-display)`, `font-size: 1.5rem`, `letter-spacing: 0.18em`
+
+---
+
+### 11.4 Información de contacto en el footer
+**Prompt:** "Quiero agregar info en contacto. Teléfono ficticio argentino, Email: scooper@gmail.com, Instagram/TikTok: scooperhelados"
+
+**Cambios en `index.html`:** Footer reestructurado con dos columnas: marca a la izquierda, contacto a la derecha.
+**Prompt adicional:** "Aclara de qué es cada información" → agregadas etiquetas `.footer-label` (Teléfono, Email, Instagram, TikTok) alineadas con los datos.
+
+---
+
+### 11.5 Migración completa a React con Create React App
+**Prompt:** "¿Ya podría incluir React?"
+
+**Decisión:** Usar `create-react-app` según requisito de la materia.
+
+**Proyecto creado en:** `PROGRA WEB TP/scooper/`
+
+**Estructura de componentes:**
+```
+src/
+├── App.js                  ← estado global (carrito, modales, toast)
+├── datos/productos.js      ← array de productos
+└── components/
+    ├── Header.jsx
+    ├── Hero.jsx
+    ├── GridProductos.jsx
+    ├── TarjetaProducto.jsx
+    ├── ModalCarrito.jsx
+    ├── ModalProducto.jsx
+    ├── Footer.jsx
+    └── Toast.jsx
+```
+
+**Estado en App.js con useState:**
+```javascript
+const [carrito, setCarrito] = useState([]);
+const [modalAbierto, setModalAbierto] = useState(false);
+const [productoDetalle, setProductoDetalle] = useState(null);
+const [toast, setToast] = useState({ visible: false, mensaje: '' });
+```
+
+**Imágenes copiadas a:** `scooper/public/`
+**CSS copiado a:** `src/index.css`
+**`src/App.css`** vaciado
+
+---
+
+### 11.6 Problemas con git y GitHub
+**Problema:** `git push` fallaba con "Missing or invalid credentials".
+**Solución:** Generar Personal Access Token en GitHub (Settings → Developer settings → Tokens classic → permiso repo) y usarlo en la URL del remote:
+```bash
+git remote set-url origin https://jlieban:TOKEN@github.com/jlieban/PROGRA-WEB-TP.git
+git push
+```
+
+**Problema adicional:** Error EMFILE (demasiados archivos abiertos) al intentar hacer `git add scooper/` sin `.gitignore` en la raíz.
+**Solución:** Creado `PROGRA WEB TP/.gitignore` con `node_modules/` y `.DS_Store`.
+
+---
+
+### 11.7 Hero rediseñado como imagen de fondo full-screen
+**Prompt:** "Me gusta la estética de rapanui.com.ar — imagen centrada cuando ingresás y el texto como por encima."
+
+**Cambios en `Hero.jsx`:**
+```jsx
+<section className="hero" id="inicio">
+    <img src="principal.png" className="hero-bg" />
+    <div className="hero-overlay" />
+    <div className="hero-contenido">...</div>
+</section>
+```
+
+**CSS:**
+- `.hero`: `height: 100vh`, `position: relative`
+- `.hero-bg`: `position: absolute`, `object-fit: cover`, ocupa todo el hero
+- `.hero-overlay`: fondo semitransparente `rgba(28,26,24,0.62)` para legibilidad
+- Título en crema con `text-shadow`, kicker en dorado claro
+
+---
+
+### 11.8 Modal de detalle de producto
+**Prompt:** "Quiero que al apretar cada sabor entre para ver la descripción, la cantidad y poder agregar la cantidad que desee al carrito."
+
+**Nuevo componente `ModalProducto.jsx`:**
+- Imagen grande del producto
+- Nombre y descripción completa
+- Precio
+- Selector de cantidad con +/−
+- Botón "Agregar al carrito" que pasa la cantidad elegida
+
+**Cambios en `TarjetaProducto.jsx`:** el click en la tarjeta llama a `onVerDetalle(producto)` en vez de seleccionar.
+
+**Cambios en `App.js`:**
+- `agregarAlCarrito(idProducto, cantidad = 1)` acepta cantidad variable
+- `productoDetalle` state controla qué producto está abierto en el modal
+
+---
+
+## 12. Correcciones de navegación y acceso a la app
+
+---
+
+### 12.1 Cómo acceder a la página web
+**Prompt:** "¿Cómo accedo a la página web?"
+
+**Respuesta:** Con `npm start` corriendo, abrir el browser en `http://localhost:3000`. Si no está corriendo:
+```bash
+cd "/Users/jazmin/Library/Mobile Documents/com~apple~CloudDocs/Downloads/PROGRA WEB TP/scooper"
+npm start
+```
+
+**Error frecuente:** Correr `npm start` desde `PROGRA WEB TP` en vez de desde `scooper/` → error `ENOENT: package.json not found`. Solución: `cd scooper` primero.
+
+---
+
+### 12.2 URLs de navegación inconsistentes
+**Prompt:** "Al seleccionar opciones de la barra de arriba (Inicio, Sabores, Contacto) la URL muestra cosas como `localhost:3000/#footer`. ¿Se puede mejorar?"
+
+**Problema:** Los `href` y los `id` de las secciones no coincidían con el nombre visible en el menú.
+
+**Solución:** Sincronizar todos los IDs con los nombres del menú:
+
+| Antes | Después |
+|-------|---------|
+| `href="#productos"` | `href="#sabores"` |
+| `href="#footer"` | `href="#contacto"` |
+| `id="productos"` en GridProductos | `id="sabores"` |
+| `id="footer"` en Footer | `id="contacto"` |
+| `getElementById('productos')` en Hero | `getElementById('sabores')` |
+
+**Archivos modificados:** `Header.jsx`, `GridProductos.jsx`, `Footer.jsx`, `Hero.jsx`
+
+---
+
+## 13. Botón "Agregar al carrito" directo en cada tarjeta
+
+**Prompt:** "Quiero que en cada opción de producto pueda agregar al carrito desde ahí sin tener que apretar necesariamente el ver detalle."
+
+**Solución:** Se agregaron dos botones en cada tarjeta de producto en vez de uno.
+
+**Cambios en `TarjetaProducto.jsx`:**
+- Ahora recibe `onAgregar` además de `onVerDetalle`
+- Dos botones dentro de `.tarjeta-botones`:
+  - **Agregar al carrito** → llama `onAgregar(producto.id)` con `e.stopPropagation()`
+  - **Ver detalle** → llama `onVerDetalle(producto)` con `e.stopPropagation()`
+
+**Cambios en `GridProductos.jsx`:** recibe y pasa `onAgregar` a cada `TarjetaProducto`.
+
+**Cambios en `App.js`:** se pasa `onAgregar={agregarAlCarrito}` a `GridProductos`.
+
+**Estilos agregados en `index.css`:**
+- `.tarjeta-botones`: flex con gap entre botones
+- `.btn-agregar`: fondo oscuro (acción principal)
+- `.btn-detalle`: borde sutil (acción secundaria)
+
+---
+
+## 14. Mejoras dinámicas y animaciones
+
+---
+
+### 14.1 Controles +/− directamente en la tarjeta
+**Prompt:** "Que cuando agregás un producto al carrito te deje poner + o - desde ahí mismo."
+
+**Solución:** Si el producto ya está en el carrito, el botón "Agregar al carrito" se reemplaza por controles −/cantidad/+ directamente en la tarjeta.
+
+**Cambios:**
+- `TarjetaProducto.jsx`: recibe `cantidadEnCarrito` y `onActualizarCantidad`. Si `cantidadEnCarrito > 0` muestra `.tarjeta-cantidad` con botones −/+, si no muestra el botón normal.
+- `GridProductos.jsx`: recibe `carrito` y calcula `cantidadEnCarrito` por producto.
+- `App.js`: pasa `carrito` y `onActualizarCantidad` a `GridProductos`.
+- `index.css`: agregado `.tarjeta-cantidad` con flex centrado y borde.
+
+---
+
+### 14.2 Cursor cuchara
+**Prompt:** "Cambiá el emoji del cursor por una cuchara."
+
+**Cambio:** `.tarjeta-producto` cursor cambiado a `🥄` via data URI en CSS.
+
+---
+
+### 14.3 Animación de helado derritiéndose al finalizar compra
+**Prompt:** "Que al finalizar compra aparezca en la pantalla como un helado derritiéndose. Que parezca real, no con emoji."
+
+**Solución:** Nuevo componente `CelebracionCompra.jsx` con un helado SVG animado.
+
+**Características:**
+- Cono de gofre con textura de líneas cruzadas
+- Dos bochas (scoop superior e inferior) en tonos crema y caramelo
+- 4 goteos (drips) que caen animados con `cubic-bezier` escalonados
+- Overlay oscuro que cubre toda la pantalla
+- Mensaje "¡Gracias por tu compra!" en Playfair Display
+- Desaparece solo a los 5.5 segundos o al hacer click
+- Se activa reemplazando el toast al finalizar compra en `App.js`
+
+**Prompt adicional:** "No se derrita el helado porque queda raro."
+→ Eliminadas las animaciones `derretirTop` y `derretirBottom` de los scoops. Solo quedan los goteos animados.
+
+---
+
+## 15. Ajustes finales de animaciones
+
+**Prompt:** "Saca el emoji de la cucharita en el cursor y que no aparezca el goteo en el helado de finalizar compra."
+
+**Cambios en `index.css`:**
+- `.tarjeta-producto`: cursor vuelve a `pointer` normal, eliminado el data URI con 🥄
+- `.drip-1, .drip-2, .drip-3, .drip-4`: `display: none` — los goteos del helado de celebración ya no se muestran
+
+---
+
+## 16. Migración a Next.js
+
+**Prompt:** "Seguimos con lo de Next. Reemplaza el proyecto actual migrando todo a Next."
+
+---
+
+### 16.1 Creación del proyecto
+Comando usado:
+```bash
+npx create-next-app@latest scooper-next --js --no-tailwind --eslint --app --no-src-dir --no-import-alias --yes
+```
+Proyecto creado en `PROGRA WEB TP/scooper-next/` usando **App Router** (Next.js 13+).
+
+---
+
+### 16.2 Diferencias clave CRA → Next.js
+
+| CRA | Next.js App Router |
+|-----|--------------------|
+| `src/index.js` | manejado automáticamente |
+| `src/App.js` | `app/page.js` |
+| `public/index.html` | `app/layout.js` |
+| `src/index.css` | `app/globals.css` |
+| Componentes en `src/components/` | Componentes en `app/components/` |
+| Fuentes via `<link>` en HTML | `next/font/google` en `layout.js` |
+
+---
+
+### 16.3 Archivos creados
+
+**`app/layout.js`** — layout raíz con metadatos y fuentes via `next/font/google`:
+```js
+import { Playfair_Display, DM_Sans } from 'next/font/google'
+```
+Las variables CSS se actualizaron a `var(--font-playfair)` y `var(--font-dm-sans)`.
+
+**`app/page.js`** — página principal con `'use client'` (usa useState). Contiene todo el estado global: carrito, modales, toast, celebración.
+
+**`app/globals.css`** — CSS completo migrado desde `src/index.css`.
+
+**`app/datos/productos.js`** — igual que antes.
+
+**`app/components/`** — todos los componentes migrados:
+- `Header.jsx` — sin `'use client'` (sin hooks)
+- `Hero.jsx` — sin `'use client'`
+- `GridProductos.jsx` — sin `'use client'`
+- `TarjetaProducto.jsx` — con `'use client'` (usa useState)
+- `ModalCarrito.jsx` — con `'use client'` (usa useEffect)
+- `ModalProducto.jsx` — con `'use client'` (usa useState + useEffect)
+- `Footer.jsx` — sin `'use client'`
+- `Toast.jsx` — sin `'use client'`
+- `CelebracionCompra.jsx` — con `'use client'` (usa useEffect)
+
+---
+
+### 16.4 Cómo correr el proyecto
+```bash
+cd scooper-next
+npm run dev
+```
+Se abre en `http://localhost:3000`.
+
+**Nota:** Next.js muestra un aviso de telemetría anónima al iniciar. Para desactivarlo: `npx next telemetry disable`.
+
+---
+
 ## 10. Solicitud de Documentación
 **Prompt:** "Podes anotar todo lo que hablamos en el archivo promptscopilot.md"
 
