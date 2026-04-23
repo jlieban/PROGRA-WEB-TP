@@ -1166,6 +1166,26 @@ scooper-next/app/
 
 ---
 
+## 19. Corrección de IDs de Productos
+
+**Prompt:** "Si pongo producto 3 no encuentra ninguno." / "Tiene más sentido que sean ids seguidos."
+
+**Problema:** Los ids de los productos en `app/datos/productos.js` no eran consecutivos (1, 2, 4, 7, 8), lo que dejaba huecos. Al entrar a `/producto/3`, `/producto/5` o `/producto/6` la página mostraba "Producto no encontrado" aunque la URL parecía válida.
+
+**Solución:** Se renumeraron los ids del 1 al 5 en orden:
+
+| Antes | Después | Producto |
+|-------|---------|----------|
+| id: 1 | id: 1 | Chocolate SCOOPER |
+| id: 2 | id: 2 | Pistacho Siciliano |
+| id: 4 | id: 3 | Dubaint |
+| id: 7 | id: 4 | Dulce de leche magnífico |
+| id: 8 | id: 5 | Carlo Mango |
+
+**Resultado:** `/producto/1` a `/producto/5` funcionan todos correctamente.
+
+---
+
 ## 10. Solicitud de Documentación
 **Prompt:** "Podes anotar todo lo que hablamos en el archivo promptscopilot.md"
 
