@@ -8,8 +8,8 @@ function Header({ totalItems, onOpenCarrito }) {
                 <nav>
                     <ul className="nav-menu">
                         <li><a href="#inicio" className="nav-link">Inicio</a></li>
-                        <li><a href="#productos" className="nav-link">Sabores</a></li>
-                        <li><a href="#footer" className="nav-link">Contacto</a></li>
+                        <li><a href="#sabores" className="nav-link">Sabores</a></li>
+                        <li><a href="#contacto" className="nav-link">Contacto</a></li>
                     </ul>
                 </nav>
                 <button className="carrito-btn" onClick={onOpenCarrito} aria-label="Abrir carrito">
