@@ -1104,6 +1104,68 @@ scooper-next/app/
 
 ---
 
+## 18. Correcciones en la Página de Detalle de Producto
+
+---
+
+### 18.1 Imagen no se veía al entrar por URL directa
+**Prompt:** "Al buscar el producto por id en el URL me abre el producto pero no se ve la imagen."
+
+**Problema:** Los productos tienen `imagen: "chocoscooper.png"` (sin `/` adelante). Cuando el browser está en `/producto/1`, interpreta esa ruta como relativa y busca la imagen en `/producto/chocoscooper.png`, que no existe.
+
+**Solución:** Agregar `/` al construir el `src` de la imagen en `app/producto/[id]/page.js`:
+
+```jsx
+// Antes (ruta relativa — se rompe en /producto/1):
+<img src={producto.imagen} />
+
+// Después (ruta absoluta desde la raíz — funciona en cualquier URL):
+<img src={`/${producto.imagen}`} />
+```
+
+**Por qué en la página principal no pasaba:** En `/` la ruta relativa `chocoscooper.png` coincide con `/chocoscooper.png`, entonces funcionaba. Al estar en una ruta anidada `/producto/1`, la ruta relativa ya no coincide.
+
+---
+
+### 18.2 Imagen se veía a la mitad / layout desorganizado
+**Prompt:** "Se ve la imagen a la mitad, quiero que se vea completa."
+**Prompt:** "Se ve la imagen completa pero queda raro. Quiero que aparezca la imagen a la izquierda y la descripción a la derecha. Que no queden huecos sin nada. Simétrico."
+
+**Problema:** La página de detalle reutilizaba las clases CSS del modal (`.modal-producto-content`, `.modal-producto-imagen`), que estaban diseñadas para un overlay centrado con altura fija y `object-fit: cover`. Al usarlas en una página normal, la imagen quedaba recortada o con huecos.
+
+**Solución:** Se crearon clases CSS propias para la página de detalle, desvinculadas del modal:
+
+**Nuevas clases en `globals.css`:**
+```css
+.detalle-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;  /* dos columnas iguales */
+    border: 1px solid var(--borde);
+    background-color: var(--blanco);
+}
+
+.detalle-imagen-wrapper { overflow: hidden; }
+
+.detalle-imagen {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;   /* llena la columna izquierda sin dejar huecos */
+    display: block;
+}
+
+.detalle-info {
+    padding: 3rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;  /* centra verticalmente el contenido */
+    gap: 1.5rem;
+}
+```
+
+**Resultado:** imagen a la izquierda ocupando toda la columna, descripción/precio/cantidad a la derecha centrados verticalmente. Ambas columnas tienen exactamente la misma altura gracias al grid.
+
+---
+
 ## 10. Solicitud de Documentación
 **Prompt:** "Podes anotar todo lo que hablamos en el archivo promptscopilot.md"
 
