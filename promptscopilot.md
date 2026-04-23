@@ -963,6 +963,147 @@ Se abre en `http://localhost:3000`.
 
 ---
 
+## 17. Implementación de Patrones Nativos de Next.js
+
+**Prompt:** "En clase me dijeron lo siguiente: Todos los archivos se llaman page.js... [notas de clase sobre routing, Link, layout]"
+
+**Objetivo:** Aplicar los patrones enseñados en clase: rutas dinámicas con `[id]`, `<Link>` para navegación, `layout.js` para Header/Footer persistentes, y Context API para estado compartido.
+
+---
+
+### 17.1 CartContext — estado compartido
+**Archivo:** `app/context/CartContext.jsx`
+
+**Problema:** El carrito vivía solo en `page.js`. Para que el Header (en el layout) vea el contador de ítems, necesitaba estado accesible desde cualquier componente.
+
+**Solución:** React Context API con `createContext` y un hook personalizado `useCarrito()`.
+
+```jsx
+'use client'
+import { createContext, useContext, useState } from 'react'
+
+const CarritoContext = createContext(null)
+
+export function CarritoProvider({ children }) {
+    const [carrito, setCarrito] = useState([])
+    // agregarAlCarrito, eliminarDelCarrito, actualizarCantidad, finalizarCompra...
+    return <CarritoContext.Provider value={{...}}>{children}</CarritoContext.Provider>
+}
+
+export function useCarrito() {
+    return useContext(CarritoContext)
+}
+```
+
+---
+
+### 17.2 ClientShell — wrapper cliente en el layout
+**Archivo:** `app/components/ClientShell.jsx`
+
+**Problema:** `layout.js` debe ser Server Component (para metadata y fuentes), pero Header y Footer necesitan acceder al contexto del carrito (client-side).
+
+**Solución:** `ClientShell` es un componente `'use client'` que envuelve `CarritoProvider`, `Header`, `Footer`, `ModalCarrito`, `Toast` y `CelebracionCompra`. El layout lo llama con `{children}` adentro.
+
+```jsx
+export default function ClientShell({ children }) {
+    return (
+        <CarritoProvider>
+            <ShellInner>{children}</ShellInner>
+        </CarritoProvider>
+    )
+}
+```
+
+---
+
+### 17.3 layout.js actualizado
+`app/layout.js` ahora importa `ClientShell` y lo usa para envolver `{children}`. Resultado: Header y Footer aparecen en **todas las páginas** automáticamente (incluyendo `/producto/[id]`).
+
+---
+
+### 17.4 Rutas dinámicas — `app/producto/[id]/page.js`
+**Prompt relacionado:** "Si yo en el URL pongo el id del producto, ¿me va a llevar a ese producto?"
+
+**Archivo creado:** `app/producto/[id]/page.js`
+
+Cuando el usuario entra a `/producto/1`, Next.js lee el `1` del URL y lo pone disponible vía `useParams()`.
+
+```jsx
+'use client'
+import { useParams } from 'next/navigation'
+
+export default function ProductoPage() {
+    const { id } = useParams()
+    const producto = productos.find(p => p.id === Number(id))
+    // Muestra imagen, nombre, descripción, selector de cantidad, botón "Agregar al carrito"
+}
+```
+
+**Rutas disponibles:**
+
+| URL | Producto |
+|-----|----------|
+| `/producto/1` | Chocolate SCOOPER |
+| `/producto/2` | Pistacho Siciliano |
+| `/producto/4` | Dubaint |
+| `/producto/7` | Dulce de leche magnífico |
+| `/producto/8` | Carlo Mango |
+
+---
+
+### 17.5 `<Link>` en lugar de `<a>`
+**Concepto de clase:** `<Link>` de `next/link` navega sin recargar la página completa (client-side navigation).
+
+**Cambios:**
+- `Header.jsx`: los tres links del nav (`/#inicio`, `/#sabores`, `/#contacto`) ahora usan `<Link>`
+- `TarjetaProducto.jsx`: la imagen y el botón "Ver detalle" son `<Link href="/producto/${id}">` — navegan a la página de detalle sin recargar
+
+---
+
+### 17.6 Simplificación de page.js
+`app/page.js` quedó simplificado: ya no tiene Header, Footer, ModalCarrito, Toast ni estado del carrito. Solo renderiza Hero y GridProductos, usando `useCarrito()` para obtener el carrito del contexto.
+
+---
+
+### 17.7 Estructura final del proyecto Next.js
+
+```
+scooper-next/app/
+├── layout.js                    ← Server Component, carga fuentes, usa ClientShell
+├── page.js                      ← Página principal (Hero + grilla)
+├── globals.css
+├── context/
+│   └── CartContext.jsx          ← Estado global del carrito
+├── components/
+│   ├── ClientShell.jsx          ← Wrapper cliente con Header/Footer/modales
+│   ├── Header.jsx               ← usa <Link> de next/link
+│   ├── Hero.jsx
+│   ├── GridProductos.jsx
+│   ├── TarjetaProducto.jsx      ← "Ver detalle" es un <Link>
+│   ├── ModalCarrito.jsx
+│   ├── Footer.jsx
+│   ├── Toast.jsx
+│   └── CelebracionCompra.jsx
+├── datos/
+│   └── productos.js
+└── producto/
+    └── [id]/
+        └── page.js              ← Página de detalle dinámica
+```
+
+---
+
+### 17.8 Concepto clave explicado en clase aplicado
+
+> "Todos los archivos se llaman `page.js`, lo que cambia es la carpeta."
+
+| Archivo | URL que maneja |
+|---------|---------------|
+| `app/page.js` | `/` |
+| `app/producto/[id]/page.js` | `/producto/1`, `/producto/2`, etc. |
+
+---
+
 ## 10. Solicitud de Documentación
 **Prompt:** "Podes anotar todo lo que hablamos en el archivo promptscopilot.md"
 
