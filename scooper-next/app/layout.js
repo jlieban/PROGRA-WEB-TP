@@ -1,5 +1,6 @@
 import { Playfair_Display, DM_Sans } from 'next/font/google'
 import './globals.css'
+import ClientShell from './components/ClientShell'
 
 const playfair = Playfair_Display({
     subsets: ['latin'],
@@ -22,7 +23,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
     return (
         <html lang="es" className={`${playfair.variable} ${dmSans.variable}`}>
-            <body>{children}</body>
+            <body>
+                <ClientShell>{children}</ClientShell>
+            </body>
         </html>
     )
 }
