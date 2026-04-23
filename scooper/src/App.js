@@ -3,6 +3,8 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 import GridProductos from './components/GridProductos';
 import ModalCarrito from './components/ModalCarrito';
+import ModalProducto from './components/ModalProducto';
+import CelebracionCompra from './components/CelebracionCompra';
 import Footer from './components/Footer';
 import Toast from './components/Toast';
 import productos from './datos/productos';
@@ -10,6 +12,8 @@ import productos from './datos/productos';
 function App() {
     const [carrito, setCarrito] = useState([]);
     const [modalAbierto, setModalAbierto] = useState(false);
+    const [productoDetalle, setProductoDetalle] = useState(null);
+    const [celebrando, setCelebrando] = useState(false);
     const [toast, setToast] = useState({ visible: false, mensaje: '' });
 
     function mostrarToast(mensaje) {
@@ -17,14 +21,14 @@ function App() {
         setTimeout(() => setToast({ visible: false, mensaje: '' }), 2800);
     }
 
-    function agregarAlCarrito(idProducto) {
+    function agregarAlCarrito(idProducto, cantidad = 1) {
         const producto = productos.find(p => p.id === idProducto);
         setCarrito(prev => {
             const item = prev.find(i => i.id === idProducto);
             if (item) {
-                return prev.map(i => i.id === idProducto ? { ...i, cantidad: i.cantidad + 1 } : i);
+                return prev.map(i => i.id === idProducto ? { ...i, cantidad: i.cantidad + cantidad } : i);
             }
-            return [...prev, { ...producto, cantidad: 1 }];
+            return [...prev, { ...producto, cantidad }];
         });
         mostrarToast(`${producto.nombre} agregado al carrito`);
     }
@@ -46,10 +50,9 @@ function App() {
             mostrarToast('El carrito está vacío');
             return;
         }
-        const total = carrito.reduce((sum, i) => sum + i.precio * i.cantidad, 0);
         setCarrito([]);
         setModalAbierto(false);
-        mostrarToast(`¡Gracias por tu compra! Total: $${total.toLocaleString('es-AR')}`);
+        setCelebrando(true);
     }
 
     const totalItems = carrito.reduce((sum, i) => sum + i.cantidad, 0);
@@ -59,8 +62,19 @@ function App() {
             <Header totalItems={totalItems} onOpenCarrito={() => setModalAbierto(true)} />
             <main>
                 <Hero />
-                <GridProductos productos={productos} onAgregar={agregarAlCarrito} />
+                <GridProductos
+                    productos={productos}
+                    carrito={carrito}
+                    onVerDetalle={setProductoDetalle}
+                    onAgregar={agregarAlCarrito}
+                    onActualizarCantidad={actualizarCantidad}
+                />
             </main>
+            <ModalProducto
+                producto={productoDetalle}
+                onClose={() => setProductoDetalle(null)}
+                onAgregar={agregarAlCarrito}
+            />
             <ModalCarrito
                 abierto={modalAbierto}
                 carrito={carrito}
@@ -71,6 +85,7 @@ function App() {
             />
             <Footer />
             <Toast visible={toast.visible} mensaje={toast.mensaje} />
+            {celebrando && <CelebracionCompra onTerminar={() => setCelebrando(false)} />}
         </>
     );
 }
