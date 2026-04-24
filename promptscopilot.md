@@ -1186,6 +1186,30 @@ scooper-next/app/
 
 ---
 
+## 20. Altura inconsistente entre páginas de detalle
+
+**Prompt:** "¿Puede ser que el producto 3 se vea de otro tamaño?"
+
+**Problema:** El Dubaint (producto 3) tiene la descripción más larga de todos los productos. Como el alto del grid dependía del contenido, la columna de texto crecía más y hacía que toda la página se viera más alta que las demás.
+
+**Solución:** Se fijó una altura de `520px` en `.detalle-grid` para que todos los productos tengan exactamente el mismo tamaño. Se agregó `overflow-y: auto` en `.detalle-info` para que si una descripción es muy larga no se corte sino que aparezca scroll interno.
+
+```css
+.detalle-grid {
+    height: 520px;   /* altura fija — igual para todos los productos */
+    ...
+}
+
+.detalle-info {
+    overflow-y: auto;   /* scroll si el texto no entra */
+    ...
+}
+```
+
+**Resultado:** `/producto/1` al `/producto/5` tienen todas exactamente el mismo formato y tamaño.
+
+---
+
 ## 10. Solicitud de Documentación
 **Prompt:** "Podes anotar todo lo que hablamos en el archivo promptscopilot.md"
 
