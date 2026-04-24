@@ -398,6 +398,7 @@ body {
 .detalle-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    height: 520px;
     border: 1px solid var(--borde);
     background-color: var(--blanco);
 }
@@ -419,6 +420,7 @@ body {
     flex-direction: column;
     justify-content: center;
     gap: 1.5rem;
+    overflow-y: auto;
 }
 
 /* ===== MODAL PRODUCTO ===== */
