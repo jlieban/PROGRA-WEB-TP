@@ -14,6 +14,7 @@ export default function Header({ totalItems, onOpenCarrito }) {
                         <li><Link href="/#inicio" className="nav-link">Inicio</Link></li>
                         <li><Link href="/#sabores" className="nav-link">Sabores</Link></li>
                         <li><Link href="/#contacto" className="nav-link">Contacto</Link></li>
+                        <li><Link href="/registro" className="nav-link">Crear cuenta</Link></li>
                     </ul>
                 </nav>
                 <button className="carrito-btn" onClick={onOpenCarrito} aria-label="Abrir carrito">

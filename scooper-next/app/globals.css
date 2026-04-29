@@ -890,3 +890,167 @@ body {
 .error-carga {
     color: #b00020;
 }
+
+/* ============================================
+   Página /registro — Formulario de crear cuenta
+   ============================================ */
+
+.registro-container {
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+}
+
+.registro-card {
+    background: #fff;
+    border: 1px solid #e8e2d6;
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    width: 100%;
+    max-width: 460px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+}
+
+.registro-titulo {
+    font-family: var(--font-playfair), serif;
+    font-size: 2rem;
+    font-weight: 500;
+    margin: 0 0 0.5rem 0;
+    color: #2a1a0a;
+}
+
+.registro-subtitulo {
+    margin: 0 0 1.75rem 0;
+    color: #7a6a55;
+    font-size: 0.95rem;
+}
+
+.registro-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.form-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.form-grupo label {
+    font-size: 0.85rem;
+    color: #4a3a25;
+    font-weight: 500;
+}
+
+.form-grupo input[type="text"],
+.form-grupo input[type="email"],
+.form-grupo input[type="password"] {
+    border: 1px solid #d8cfbe;
+    border-radius: 8px;
+    padding: 0.7rem 0.9rem;
+    font-size: 0.95rem;
+    font-family: inherit;
+    background: #fdfbf6;
+    transition: border-color 0.2s;
+}
+
+.form-grupo input:focus {
+    outline: none;
+    border-color: #8b6f47;
+}
+
+.form-grupo input[aria-invalid="true"] {
+    border-color: #b00020;
+    background: #fff5f5;
+}
+
+.form-grupo-checkbox label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-direction: row;
+    cursor: pointer;
+}
+
+.form-grupo-checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.form-error {
+    color: #b00020;
+    font-size: 0.8rem;
+    margin-top: 0.15rem;
+}
+
+.btn-registro {
+    background: #2a1a0a;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.85rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background 0.2s;
+}
+
+.btn-registro:hover {
+    background: #4a3020;
+}
+
+.registro-pie {
+    text-align: center;
+    margin: 1rem 0 0 0;
+    font-size: 0.85rem;
+    color: #7a6a55;
+}
+
+.registro-pie a {
+    color: #2a1a0a;
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+.registro-exito {
+    text-align: center;
+    background: #fff;
+    border: 1px solid #e8e2d6;
+    border-radius: 16px;
+    padding: 3rem 2rem;
+    max-width: 460px;
+}
+
+.registro-exito h1 {
+    font-family: var(--font-playfair), serif;
+    font-size: 1.75rem;
+    font-weight: 500;
+    margin: 0 0 0.5rem 0;
+    color: #2a1a0a;
+}
+
+.registro-exito p {
+    color: #7a6a55;
+    margin: 0 0 1.5rem 0;
+}
+
+.btn-volver {
+    display: inline-block;
+    background: #2a1a0a;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.btn-volver:hover {
+    background: #4a3020;
+}

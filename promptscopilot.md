@@ -1346,3 +1346,83 @@ export default function Home() {
 
 **Resultado:** scooper-next ahora demuestra fetch + useEffect + estados de carga/error. Cubre los conceptos del Módulo 3 (componente, useState, useEffect, render condicional, cliente vs servidor).
 
+---
+
+## 23. Formulario de registro con validación en /registro
+
+**Prompt:** "Mi proyecto no tiene ningún formulario y la rúbrica pide validación de formularios. Quiero un formulario de registro de usuario en una ruta nueva /registro de scooper-next, con varios campos y validaciones distintas para tener material para el oral."
+
+**Problema:** El TP no tenía formularios, así que no se podía cubrir la rúbrica del Módulo 2 ("Entiende validación de formularios"). Tampoco había una tercera ruta para reforzar la rúbrica del Módulo 3 ("concepto de rutas en Next").
+
+**Solución:**
+
+1. Se creó la ruta `app/registro/page.js` aprovechando el App Router de Next.js: con solo crear la carpeta `registro/` con un `page.js` adentro, la URL `/registro` queda automáticamente disponible.
+2. Se agregó un link "Crear cuenta" en `Header.jsx` usando `next/link` para navegación cliente sin recarga.
+3. Se agregaron estilos en `globals.css` (.registro-container, .registro-card, .form-grupo, .form-error, .btn-registro, etc.).
+4. El formulario tiene 5 campos, cada uno con un tipo distinto de validación:
+
+| Campo | Validación | Cómo se hace |
+|---|---|---|
+| Nombre | Mínimo 2 caracteres (sin contar espacios) | `nombre.trim().length < 2` |
+| Email | Formato `algo@algo.algo` | Regex `/^[^\s@]+@[^\s@]+\.[^\s@]+$/` |
+| Contraseña | Mínimo 8 caracteres | `password.length < 8` |
+| Confirmar contraseña | Coincide con la primera | `confirmPassword !== password` |
+| Términos | Checkbox marcado | `!terminos` |
+
+```jsx
+'use client'
+import { useState } from 'react'
+
+export default function Registro() {
+    const [nombre, setNombre] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
+    const [terminos, setTerminos] = useState(false)
+    const [errores, setErrores] = useState({})
+    const [registrado, setRegistrado] = useState(false)
+
+    function validarFormulario() {
+        const nuevosErrores = {}
+        if (nombre.trim().length < 2) nuevosErrores.nombre = '...'
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) nuevosErrores.email = '...'
+        if (password.length < 8) nuevosErrores.password = '...'
+        if (confirmPassword !== password) nuevosErrores.confirmPassword = '...'
+        if (!terminos) nuevosErrores.terminos = '...'
+        return nuevosErrores
+    }
+
+    function manejarSubmit(e) {
+        e.preventDefault()  // ← evita que el navegador recargue la página
+        const nuevosErrores = validarFormulario()
+        setErrores(nuevosErrores)
+        if (Object.keys(nuevosErrores).length > 0) return
+        setRegistrado(true)  // ← en un proyecto real iría un fetch POST aquí
+    }
+
+    // ... render con inputs controlados ...
+}
+```
+
+### Conceptos clave que habilita esta sección (relevantes para el oral)
+
+- **Formulario en HTML/React:** el elemento `<form>` agrupa inputs y dispara `onSubmit` cuando el usuario aprieta el botón `type="submit"`.
+- **Input controlado:** el `value` del input siempre viene del `useState`, y `onChange` actualiza el estado. La verdad de los datos vive en React, no en el DOM.
+- **`onChange` y `onSubmit`:** los eventos principales del formulario. `onChange` se dispara con cada tecla; `onSubmit` cuando se envía el form.
+- **`event.preventDefault()`:** sin esto, el navegador recarga la página al enviar el form (comportamiento por defecto histórico de HTML). En SPAs como React/Next siempre lo bloqueamos para manejar todo con JS.
+- **Validación HTML5 vs validación JS:** `type="email"`, `required`, `minlength` activan validación nativa; pero la usamos con `noValidate` para mostrar **nuestros** mensajes personalizados. Validaciones cruzadas (como "las contraseñas coinciden") no son posibles solo con HTML5.
+- **Render condicional:** `{errores.email && <span>{errores.email}</span>}` muestra el mensaje solo si hay error.
+- **Render alternativo:** si `registrado` es true, devolvemos un JSX completamente distinto (mensaje de bienvenida) en lugar del formulario. Es la forma idiomática de React para "cambiar de pantalla" dentro del mismo componente.
+- **Por qué no se persiste el registro:** el sitio es solo frontend (sin backend ni base de datos, como permite la consigna). En un proyecto real, después del `setRegistrado(true)` iría un `fetch` POST a una API. Cubre la diferencia conceptual entre "validar del lado del cliente" y "persistir del lado del servidor".
+
+### Beneficio extra: tercera ruta
+
+Con `/registro`, scooper-next tiene 3 rutas distintas:
+- `/` — home con grilla de productos
+- `/producto/[id]` — detalle dinámico
+- `/registro` — formulario
+
+Esto refuerza la rúbrica del Módulo 3 ("concepto básico de rutas en Next") con tres casos: ruta estática, ruta dinámica con parámetro, y ruta con formulario.
+
+**Resultado:** rúbrica del Módulo 2 (validación de formularios, eventos en JS) totalmente cubierta. Refuerza también el Módulo 3 con una tercera ruta y demuestra render condicional.
+
