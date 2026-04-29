@@ -875,3 +875,18 @@ body {
 @media (max-width: 480px) {
     .grid-productos { grid-template-columns: 1fr; }
 }
+
+/* Mensajes de estado mientras se cargan los productos con fetch */
+.cargando,
+.error-carga {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #666;
+    font-size: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.error-carga {
+    color: #b00020;
+}

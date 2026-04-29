@@ -1280,3 +1280,69 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 **Resultado:** la versión HTML/JS ahora carga los productos dinámicamente desde `data.json` y la rúbrica del Módulo 2 queda totalmente cubierta (asincronía, fetch, async/await, manejo de errores).
 
+---
+
+## 22. Migración a fetch + useEffect en scooper-next
+
+**Prompt:** "En la versión Next los productos los importo directamente desde productos.js. Quiero migrarlo a fetch dentro de useEffect para poder explicar useEffect, ciclo de vida del componente y la diferencia entre cliente y servidor."
+
+**Problema:** En `scooper-next/app/page.js` los productos se traían con `import productos from './datos/productos'`. Eso es sincrónico y se resuelve en build time, así que no había forma de explicar `useEffect`, ciclo de vida ni asincronía en el contexto React/Next que pide la rúbrica del Módulo 3.
+
+**Solución:**
+
+1. Se creó `scooper-next/public/productos.json` con la misma data que tenía `productos.js`. Como Next sirve la carpeta `/public` en la raíz del sitio, el archivo queda accesible en la URL `/productos.json`.
+2. Se modificó `app/page.js` para usar tres `useState` (productos, cargando, error) y un `useEffect` con array de dependencias vacío `[]` que dispara el fetch al montar el componente.
+3. Se mantienen render condicionales: mientras `cargando` es true se muestra "Cargando productos…"; si hay `error` se muestra el mensaje de error; sino, se renderiza la grilla.
+4. Se mantiene `productos.js` y `import productos from './datos/productos'` en el resto de la app (CartContext y página de detalle), porque ese módulo sigue siendo útil para lookups internos por id sin disparar fetches innecesarios.
+
+```jsx
+'use client'
+import { useEffect, useState } from 'react'
+
+export default function Home() {
+    const [productos, setProductos] = useState([])
+    const [cargando, setCargando] = useState(true)
+    const [error, setError] = useState(null)
+
+    useEffect(() => {
+        async function cargarProductos() {
+            try {
+                const respuesta = await fetch('/productos.json')
+                if (!respuesta.ok) throw new Error(`Error HTTP: ${respuesta.status}`)
+                const datos = await respuesta.json()
+                setProductos(datos.productos)
+            } catch (err) {
+                setError('No pudimos cargar los productos.')
+            } finally {
+                setCargando(false)
+            }
+        }
+        cargarProductos()
+    }, [])  // ← array vacío: se ejecuta una sola vez al montar el componente
+
+    return (
+        <main>
+            <Hero />
+            {cargando && <p className="cargando">Cargando productos…</p>}
+            {error && <p className="error-carga">{error}</p>}
+            {!cargando && !error && <GridProductos productos={productos} ... />}
+        </main>
+    )
+}
+```
+
+### Conceptos clave que habilita esta sección (relevantes para el oral)
+
+- **Componente:** una función JS que devuelve JSX (HTML escrito dentro de JS). React la llama cada vez que algo cambia y compara el resultado nuevo con el viejo para actualizar solo lo necesario en la pantalla.
+- **`useState`:** crea una variable "reactiva" dentro del componente. Cuando se actualiza con su setter (ej. `setProductos(...)`), React vuelve a llamar al componente y re-renderiza la pantalla con el valor nuevo.
+- **`useEffect`:** ejecuta efectos secundarios *después* de que el componente se pintó. El segundo argumento controla cuándo se ejecuta:
+  - `[]` (vacío): una sola vez al montar.
+  - `[dep]`: cada vez que `dep` cambia.
+  - sin segundo argumento: en cada render (peligroso).
+- **Por qué `useEffect` y no fetch directo:** si llamáramos a `fetch` en el cuerpo del componente, se dispararía en cada re-render (cientos de veces). `useEffect` con `[]` lo limita a una vez.
+- **Ciclo de vida del componente:** monta → primer render con estado inicial vacío → useEffect dispara el fetch → setProductos actualiza estado → segundo render con datos → si el usuario navega a otra ruta, el componente se desmonta.
+- **`'use client'`:** Next por defecto renderiza componentes en el servidor. Los hooks (`useState`, `useEffect`) solo funcionan del lado del cliente. Esta directiva le dice a Next que este componente debe correr en el navegador. **Esto es exactamente la "diferencia conceptual entre cliente y servidor" que pide la rúbrica.**
+- **Carpeta `public/`:** archivos servidos como estáticos en la raíz. `public/productos.json` queda accesible en `/productos.json`.
+
+**Resultado:** scooper-next ahora demuestra fetch + useEffect + estados de carga/error. Cubre los conceptos del Módulo 3 (componente, useState, useEffect, render condicional, cliente vs servidor).
+
