@@ -1229,3 +1229,54 @@ scooper-next/app/
 - ✅ Sección 9: Implementación de estado reactivo estilo useState en vanilla JS
 - ✅ Sección 10: Esta entrada
 
+---
+
+## 21. Migración a fetch + async/await en la versión HTML/JS
+
+**Prompt:** "En script.js los productos están hardcodeados como un array. Quiero cargarlos con fetch desde data.json para poder explicar asincronía en el oral."
+
+**Problema:** En la versión vanilla del proyecto, los productos vivían dentro de `script.js` como un array constante. Eso impedía explicar en el oral conceptos clave que pide la rúbrica del Módulo 2: asincronía, `fetch`, `async/await` y "qué ocurre sin await".
+
+**Solución:** Se reemplazó el array hardcodeado por una función asincrónica `cargarProductos()` que pide el archivo `data.json` con `fetch`, lo parsea con `.json()` y guarda el resultado en una variable de módulo. El handler de `DOMContentLoaded` se convirtió en `async` para poder usar `await cargarProductos()` antes de pintar la grilla.
+
+```js
+// Variable que se llena después del fetch (antes era un array hardcodeado)
+let datosProductos = [];
+
+async function cargarProductos() {
+    try {
+        // fetch devuelve una Promise que se resuelve con el objeto Response
+        const respuesta = await fetch('data.json');
+        if (!respuesta.ok) {
+            throw new Error(`Error HTTP: ${respuesta.status}`);
+        }
+        // .json() también es asincrónica: lee el cuerpo y lo parsea
+        const datos = await respuesta.json();
+        datosProductos = datos.productos;
+    } catch (error) {
+        console.error('No se pudieron cargar los productos:', error);
+        gridProductos.innerHTML = '<p class="error-carga">No pudimos cargar los productos.</p>';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    inicializarElementos();
+    configurarEventos();
+    gridProductos.innerHTML = '<p class="cargando">Cargando productos…</p>';
+    await cargarProductos();      // ← sin await, mostrarProductos correría con array vacío
+    mostrarProductos();
+    suscribirCarrito(() => actualizarCarrito());
+});
+```
+
+### Conceptos clave que habilita esta sección (relevantes para el oral)
+
+- **Asincronía:** `fetch` no es instantáneo. El navegador tarda un tiempo en ir al servidor, traer el archivo y devolverlo. El JS no se queda "congelado" esperando: sigue ejecutando otras cosas y vuelve cuando llega la respuesta.
+- **Promise:** objeto que representa un valor "que va a llegar". Tiene tres estados: pending, fulfilled (resuelta) o rejected (rechazada).
+- **`async/await`:** azúcar sintáctica sobre Promises. `async` marca una función como asincrónica; `await` pausa la función hasta que la Promise se resuelva, y devuelve el valor desempaquetado.
+- **Qué ocurre sin `await`:** si se omite el `await` en `await cargarProductos()`, el handler sigue de largo. `mostrarProductos()` corre con `datosProductos` todavía vacío y la grilla aparece sin nada. Los productos llegan unos ms después pero ya nadie los pinta.
+- **Manejo de errores con `try/catch`:** si el fetch falla (404, sin internet, JSON malformado), la página no rompe — se muestra un mensaje de error al usuario.
+- **CORS y archivos locales:** `fetch` no funciona si se abre `index.html` con doble click (URL `file://`). Hay que servir la carpeta con un servidor local (ej. `python3 -m http.server 8000`) y abrir `http://localhost:8000`.
+
+**Resultado:** la versión HTML/JS ahora carga los productos dinámicamente desde `data.json` y la rúbrica del Módulo 2 queda totalmente cubierta (asincronía, fetch, async/await, manejo de errores).
+
