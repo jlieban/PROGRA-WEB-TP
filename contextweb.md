@@ -27,6 +27,10 @@ Su objetivo es mostrar información organizada utilizando una estructura simple 
 - style.css → estilos visuales
 - script.js → lógica en JavaScript
 - data.json → archivo con datos en formato JSON
+- 
+## Agrego nuevas cosas
+- react
+- next
 
 ## Reglas de desarrollo
 - NO usar estilos inline en HTML
