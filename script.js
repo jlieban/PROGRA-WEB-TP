@@ -22,13 +22,37 @@ function crearEstado(inicial) {
 
 const [getCarrito, setCarrito, suscribirCarrito] = crearEstado([]);
 
-const datosProductos = [
-    { id: 1, nombre: "Chocolate SCOOPER",     descripcion: "La especialidad de la casa. Chocolate al 60% con una crema de avellanas tostadas y pretzels newyorkinos",                                                                              precio: 10000, imagen: "chocoscooper.png" },
-    { id: 2, nombre: "Pistacho Siciliano",   descripcion: "Con crema de pistacho casera y pistachos caramelizados de origen siciliano con un toque de sal marina",                                                                                precio: 10000, imagen: "pistachosic.png"  },
-    { id: 4, nombre: "Dubaint",              descripcion: "Una reversión del clásico Dubai. Mezcla perfecta de dulce de leche y chocolate con crema de pistachos y un crocante de galleta casera irresistible",                                   precio: 10000, imagen: "dubaint.png"      },
-    { id: 7, nombre: "Dulce de leche magnífico", descripcion: "Con un laminado de chocolate negro y blanco y destellos de dulce de leche natural",                                                                                               precio: 10000, imagen: "ddl.png"          },
-    { id: 8, nombre: "Carlo Mango",          descripcion: "El mejor mango brasilero transformado en el gran sabor del helado argentino",                                                                                                          precio: 10000, imagen: "mango.png"        }
-];
+// Los productos ya no están hardcodeados acá: los traemos con fetch desde data.json.
+// Empezamos con un array vacío y lo llenamos cuando llega la respuesta del servidor.
+let datosProductos = [];
+
+// Función asincrónica que pide el archivo data.json al servidor.
+// Es async porque por dentro usa await — el navegador tarda un tiempo en
+// devolvernos el archivo y necesitamos esperar la respuesta sin congelar la página.
+async function cargarProductos() {
+    try {
+        // 1) fetch devuelve una Promise que se resuelve con un objeto Response.
+        //    await pausa esta función hasta que la promesa se resuelva.
+        const respuesta = await fetch('data.json');
+
+        // 2) Si el servidor respondió con error (404, 500, etc.), lo detectamos.
+        if (!respuesta.ok) {
+            throw new Error(`Error HTTP: ${respuesta.status}`);
+        }
+
+        // 3) .json() también es asincrónica: lee el cuerpo de la respuesta y
+        //    lo parsea como JSON. También devuelve una Promise, por eso otro await.
+        const datos = await respuesta.json();
+
+        // 4) Guardamos los productos en la variable que usa el resto del script.
+        datosProductos = datos.productos;
+    } catch (error) {
+        // Si algo falla (no hay conexión, archivo inexistente, JSON mal formado),
+        // se lo mostramos al usuario en vez de dejar la página rota.
+        console.error('No se pudieron cargar los productos:', error);
+        gridProductos.innerHTML = '<p class="error-carga">No pudimos cargar los productos. Probá recargar la página.</p>';
+    }
+}
 
 let gridProductos, modalCarrito, carritoBtn, cerrarModal, cerrarOverlay,
     carritoItems, totalCarrito, cantidadCarrito, btnComprar,
@@ -209,9 +233,23 @@ function configurarEventos() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+// El handler se declara async para poder usar await adentro.
+// Sin async, no podríamos pausar la ejecución hasta que termine el fetch.
+document.addEventListener('DOMContentLoaded', async () => {
     inicializarElementos();
     configurarEventos();
+
+    // Mostramos un mensaje de "cargando" mientras el fetch va y vuelve.
+    // Esto se ve por una fracción de segundo si la red es rápida, pero es
+    // importante: prueba que la página no se queda congelada esperando.
+    gridProductos.innerHTML = '<p class="cargando">Cargando productos…</p>';
+
+    // ⚠️ IMPORTANTE — SIN AWAIT acá, mostrarProductos() correría con
+    // datosProductos todavía vacío y la grilla saldría sin nada.
+    // Con await, el navegador "espera" la respuesta del servidor antes de seguir.
+    await cargarProductos();
+
+    // Recién ahora datosProductos tiene los datos: podemos pintar la grilla.
     mostrarProductos();
     suscribirCarrito(() => actualizarCarrito());
 });

@@ -716,3 +716,17 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* Mensajes de estado mientras se cargan los productos con fetch */
+.cargando,
+.error-carga {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+    font-size: 0.95rem;
+}
+
+.error-carga {
+    color: #b00020;
+}
