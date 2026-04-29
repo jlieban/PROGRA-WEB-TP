@@ -8,7 +8,7 @@ export default function Hero() {
             <img src="principal.png" alt="Helado artesanal SCOOPER" className="hero-bg" />
             <div className="hero-overlay" />
             <div className="hero-contenido">
-                <p className="hero-kicker">— Colección 2026</p>
+                <p className="hero-kicker">— Nueva colección 2026</p>
                 <h1 className="hero-titulo">Cada pote,<br /><em>una obra.</em></h1>
                 <p className="hero-bajada">Sabores únicos elaborados con ingredientes seleccionados. Sin artificios. Sin apuros.</p>
                 <button className="btn-ver" onClick={scrollAProductos}>Ver sabores</button>
