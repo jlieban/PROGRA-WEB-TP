@@ -1,0 +1,100 @@
+%% Diagrama de arquitectura — SCOOPER (scooper-next)
+%% Cubre los 8 requisitos del Parcial 2026 (Módulo 1, Submódulo A — 12 pts).
+%% Para renderizar online: pegar este código en https://mermaid.live
+
+flowchart TB
+    %% =========================================
+    %% ZONA 1 — Usuario y Navegador
+    %% =========================================
+    User(["👤 Usuario"])
+    Browser["🌐 Navegador<br/>scooper-next.vercel.app"]
+    User -->|escribe URL / hace click| Browser
+
+    %% =========================================
+    %% ZONA 2 — Frontend (Next.js App Router)
+    %% =========================================
+    subgraph Frontend ["⚛️ Frontend — Next.js (App Router)"]
+        direction TB
+
+        subgraph Routes ["📂 Rutas (carpetas en /app)"]
+            R1["/<br/>app/page.js<br/>(home)"]
+            R2["/producto/[id]<br/>(detalle dinámico)"]
+            R3["/registro<br/>(formulario)"]
+        end
+
+        subgraph Layout ["🧱 Layout global — app/layout.js"]
+            Header["Header.jsx<br/>(nav + carrito)"]
+            Footer["Footer.jsx"]
+        end
+
+        subgraph Comps ["🧩 Componentes — JSX = estructura"]
+            Hero["Hero.jsx"]
+            Grid["GridProductos.jsx"]
+            Card["ProductoCard.jsx"]
+            Cart["Carrito.jsx"]
+            FormReg["Formulario en /registro"]
+        end
+
+        subgraph State ["🧠 Manejo de estado"]
+            Ctx["CartContext<br/>(useContext)<br/>carrito global"]
+            LS["useState locales<br/>productos, cargando,<br/>error, nombre, email..."]
+            Eff["useEffect<br/>(efectos al montar)"]
+        end
+
+        CSS["🎨 globals.css<br/>(estilos = CSS)"]
+        JSON["📄 public/productos.json<br/>(datos)"]
+    end
+
+    %% Conexiones del frontend
+    Browser --> Routes
+    R1 --> Layout
+    R1 --> Comps
+    R2 --> Comps
+    R3 --> FormReg
+
+    %% Fetch + actualización de UI (cómo se actualiza la interfaz)
+    Eff -->|fetch '/productos.json'| JSON
+    JSON -->|setProductos| LS
+    LS -->|re-render| Grid
+
+    %% Estado global del carrito
+    Card -->|agregarAlCarrito| Ctx
+    Ctx -->|totalItems| Header
+    Cart -->|lee / modifica| Ctx
+
+    %% Estilos aplicados con className
+    CSS -.->|className| Comps
+    CSS -.->|className| Layout
+
+    %% =========================================
+    %% ZONA 3 — Flujo de deploy (CI/CD)
+    %% =========================================
+    subgraph Deploy ["🚀 Flujo de deploy — CI/CD"]
+        direction LR
+        VS["💻 VS Code<br/>(código local)"]
+        GH["🐙 GitHub<br/>(rama main)"]
+        VC["☁️ Vercel<br/>(build + deploy automático)"]
+        VS -->|git push| GH
+        GH -->|webhook| VC
+    end
+
+    VC -->|sirve URL pública| Browser
+
+    %% Estilos visuales
+    classDef user fill:#fff4e6,stroke:#d97706,stroke-width:2px;
+    classDef browser fill:#e0f2fe,stroke:#0284c7,stroke-width:2px;
+    classDef route fill:#ede9fe,stroke:#7c3aed,stroke-width:1.5px;
+    classDef comp fill:#fef3c7,stroke:#d97706,stroke-width:1.5px;
+    classDef state fill:#dcfce7,stroke:#16a34a,stroke-width:1.5px;
+    classDef data fill:#fee2e2,stroke:#dc2626,stroke-width:1.5px;
+    classDef css fill:#fce7f3,stroke:#db2777,stroke-width:1.5px;
+    classDef deploy fill:#e0e7ff,stroke:#4f46e5,stroke-width:1.5px;
+
+    class User user;
+    class Browser browser;
+    class R1,R2,R3 route;
+    class Header,Footer,Hero,Grid,Card,Cart,FormReg comp;
+    class Ctx,LS,Eff state;
+    class JSON data;
+    class CSS css;
+    class VS,GH,VC deploy;

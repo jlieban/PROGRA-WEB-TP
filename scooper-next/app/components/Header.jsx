@@ -22,8 +22,8 @@ export default function Header({ totalItems, onOpenCarrito }) {
         return () => document.removeEventListener('mousedown', handleClickAfuera)
     }, [])
 
-    function cerrarSesion() {
-        logout()
+    async function cerrarSesion() {
+        await logout()
         setDropdownAbierto(false)
         router.push('/')
     }
@@ -54,6 +54,10 @@ export default function Header({ totalItems, onOpenCarrito }) {
                                     </button>
                                     {dropdownAbierto && (
                                         <div className="usuario-dropdown">
+                                            <Link href="/ordenes" className="dropdown-item" onClick={() => setDropdownAbierto(false)}>
+                                                Mis pedidos
+                                            </Link>
+                                            <div className="dropdown-divider"/>
                                             <button className="dropdown-item dropdown-cerrar" onClick={cerrarSesion}>
                                                 Cerrar sesión
                                             </button>

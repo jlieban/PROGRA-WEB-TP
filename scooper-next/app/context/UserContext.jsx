@@ -1,31 +1,50 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect } from 'react'
+import { supabase } from '@/lib/supabase'
 
 const UserContext = createContext(null)
 
 export function UserProvider({ children }) {
     const [usuario, setUsuario] = useState(null)
 
-    // useEffect corre solo en el cliente, después de la hidratación
-    // Es la única forma segura de leer localStorage en Next.js
     useEffect(() => {
-        const guardado = localStorage.getItem('usuario')
-        if (guardado) setUsuario(JSON.parse(guardado))
+        // Leer la sesión activa al montar el componente
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session?.user) {
+                setUsuario({
+                    id: session.user.id,
+                    email: session.user.email,
+                    nombre: session.user.user_metadata?.nombre || session.user.email
+                })
+            }
+        })
+
+        // Escuchar cambios de sesión en tiempo real:
+        // dispara cuando el usuario inicia sesión, cierra sesión, o el token se renueva
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (session?.user) {
+                setUsuario({
+                    id: session.user.id,
+                    email: session.user.email,
+                    nombre: session.user.user_metadata?.nombre || session.user.email
+                })
+            } else {
+                setUsuario(null)
+            }
+        })
+
+        // Cleanup: cancelar la suscripción cuando el componente se desmonta
+        return () => subscription.unsubscribe()
     }, [])
 
-    function login(datos) {
-        localStorage.setItem('usuario', JSON.stringify(datos))
-        setUsuario(datos)
-    }
-
-    function logout() {
-        localStorage.removeItem('usuario')
-        setUsuario(null)
+    async function logout() {
+        await supabase.auth.signOut()
+        // onAuthStateChange se encarga de setUsuario(null)
     }
 
     return (
-        <UserContext.Provider value={{ usuario, login, logout }}>
+        <UserContext.Provider value={{ usuario, logout }}>
             {children}
         </UserContext.Provider>
     )

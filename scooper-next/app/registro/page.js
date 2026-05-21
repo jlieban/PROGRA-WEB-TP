@@ -2,56 +2,38 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { supabase } from '@/lib/supabase'
 
 export default function Registro() {
-    // Un useState por cada campo del formulario.
-    // El "valor" que se ve dentro del input siempre es lo que está acá.
-    // Cuando el usuario escribe, llamamos al setter (ej. setNombre) y React
-    // re-renderiza el input con el valor nuevo. Esto se llama "input controlado".
     const [nombre, setNombre] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [terminos, setTerminos] = useState(false)
-
-    // Un objeto que guarda los mensajes de error de cada campo.
-    // Si un campo no tiene error, su clave no aparece o está vacía.
-    // Ejemplo: { email: 'El email no tiene formato válido', password: '...' }
     const [errores, setErrores] = useState({})
-
-    // Estado para mostrar el mensaje de éxito una vez registrado.
     const [registrado, setRegistrado] = useState(false)
+    const [cargando, setCargando] = useState(false)
 
-    // Función que valida todos los campos y devuelve un objeto con los errores.
-    // Si el objeto está vacío, significa que todo está bien.
     function validarFormulario() {
         const nuevosErrores = {}
 
-        // Validación 1 — Nombre: que no esté vacío y tenga al menos 2 letras.
         if (nombre.trim().length < 2) {
             nuevosErrores.nombre = 'El nombre debe tener al menos 2 caracteres.'
         }
 
-        // Validación 2 — Email: formato válido.
-        // El regex chequea que tenga algo + @ + algo + . + algo
         const formatoEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         if (!formatoEmail.test(email)) {
             nuevosErrores.email = 'El email no tiene un formato válido.'
         }
 
-        // Validación 3 — Contraseña: al menos 8 caracteres.
         if (password.length < 8) {
             nuevosErrores.password = 'La contraseña debe tener al menos 8 caracteres.'
         }
 
-        // Validación 4 — Confirmar contraseña: tiene que coincidir con la primera.
-        // Esta validación NO se puede hacer con HTML5 solo: necesita JS para
-        // comparar dos campos entre sí.
         if (confirmPassword !== password) {
             nuevosErrores.confirmPassword = 'Las contraseñas no coinciden.'
         }
 
-        // Validación 5 — Términos: el checkbox tiene que estar marcado.
         if (!terminos) {
             nuevosErrores.terminos = 'Tenés que aceptar los términos para registrarte.'
         }
@@ -59,52 +41,46 @@ export default function Registro() {
         return nuevosErrores
     }
 
-    // Esta función corre cuando el usuario aprieta el botón "Crear cuenta".
-    // El parámetro 'e' es el "evento" del submit que dispara el formulario.
     async function manejarSubmit(e) {
-        // event.preventDefault() evita el comportamiento por defecto del navegador,
-        // que sería: recargar la página y enviar los datos a la URL del form.
-        // Como nosotros queremos manejar todo con JS, lo bloqueamos.
         e.preventDefault()
 
-        // Corremos las validaciones.
         const nuevosErrores = validarFormulario()
         setErrores(nuevosErrores)
+        if (Object.keys(nuevosErrores).length > 0) return
 
-        // Si el objeto de errores tiene alguna clave, hay errores: no seguimos.
-        if (Object.keys(nuevosErrores).length > 0) {
-            return
-        }
+        setCargando(true)
 
-        // Enviamos los datos a la API route de registro
         try {
-            const respuesta = await fetch('/api/auth/registro', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nombre, email, password })
+            // Supabase Auth: crea el usuario en auth.users
+            // El nombre se guarda en user_metadata para poder mostrarlo después
+            const { data, error } = await supabase.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: { nombre }
+                }
             })
 
-            const datos = await respuesta.json()
-
-            if (!respuesta.ok) {
-                setErrores({ general: datos.error || 'Error al registrarse' })
+            if (error) {
+                setErrores({ general: error.message })
                 return
             }
 
             setRegistrado(true)
         } catch (err) {
             setErrores({ general: 'Error de conexión. Intentá de nuevo.' })
+        } finally {
+            setCargando(false)
         }
     }
 
-    // Si ya se registró con éxito, mostramos solo el mensaje.
     if (registrado) {
         return (
             <main className="registro-container">
                 <div className="registro-exito">
                     <h1>¡Bienvenido a SCOOPER, {nombre}!</h1>
                     <p>Tu cuenta fue creada con éxito.</p>
-                    <Link href="/" className="btn-volver">Volver al inicio</Link>
+                    <Link href="/login" className="btn-volver">Iniciar sesión</Link>
                 </div>
             </main>
         )
@@ -116,12 +92,9 @@ export default function Registro() {
                 <h1 className="registro-titulo">Crear cuenta</h1>
                 <p className="registro-subtitulo">Sumate a SCOOPER y disfrutá de los nuevos sabores.</p>
 
-                {/* noValidate desactiva la validación automática del navegador para
-                    que solo se muestren NUESTROS mensajes de error personalizados. */}
                 {errores.general && <p className="form-error">{errores.general}</p>}
                 <form className="registro-form" onSubmit={manejarSubmit} noValidate>
 
-                    {/* CAMPO 1 — Nombre */}
                     <div className="form-grupo">
                         <label htmlFor="nombre">Nombre</label>
                         <input
@@ -135,7 +108,6 @@ export default function Registro() {
                         {errores.nombre && <span className="form-error">{errores.nombre}</span>}
                     </div>
 
-                    {/* CAMPO 2 — Email */}
                     <div className="form-grupo">
                         <label htmlFor="email">Email</label>
                         <input
@@ -149,7 +121,6 @@ export default function Registro() {
                         {errores.email && <span className="form-error">{errores.email}</span>}
                     </div>
 
-                    {/* CAMPO 3 — Contraseña */}
                     <div className="form-grupo">
                         <label htmlFor="password">Contraseña</label>
                         <input
@@ -163,7 +134,6 @@ export default function Registro() {
                         {errores.password && <span className="form-error">{errores.password}</span>}
                     </div>
 
-                    {/* CAMPO 4 — Confirmar contraseña */}
                     <div className="form-grupo">
                         <label htmlFor="confirmPassword">Confirmar contraseña</label>
                         <input
@@ -177,7 +147,6 @@ export default function Registro() {
                         {errores.confirmPassword && <span className="form-error">{errores.confirmPassword}</span>}
                     </div>
 
-                    {/* CAMPO 5 — Términos y condiciones (checkbox) */}
                     <div className="form-grupo form-grupo-checkbox">
                         <label htmlFor="terminos">
                             <input
@@ -191,10 +160,12 @@ export default function Registro() {
                         {errores.terminos && <span className="form-error">{errores.terminos}</span>}
                     </div>
 
-                    <button type="submit" className="btn-registro">Crear cuenta</button>
+                    <button type="submit" className="btn-registro" disabled={cargando}>
+                        {cargando ? 'Creando cuenta...' : 'Crear cuenta'}
+                    </button>
 
                     <p className="registro-pie">
-                        ¿Ya tenés cuenta? <Link href="/">Volver al inicio</Link>
+                        ¿Ya tenés cuenta? <Link href="/login">Iniciar sesión</Link>
                     </p>
                 </form>
             </div>

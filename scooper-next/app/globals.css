@@ -1132,3 +1132,134 @@ body {
 .btn-volver:hover {
     background: #4a3020;
 }
+
+/* ===== ORDENES ===== */
+.ordenes-container {
+    max-width: 760px;
+    margin: 6rem auto 4rem;
+    padding: 0 2rem;
+}
+
+.ordenes-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    gap: 1rem;
+}
+
+.ordenes-titulo {
+    font-family: var(--fuente-display);
+    font-size: 2rem;
+    color: var(--carbon);
+}
+
+.ordenes-cargando {
+    text-align: center;
+    color: var(--gris);
+    margin-top: 4rem;
+}
+
+.ordenes-vacio {
+    text-align: center;
+    color: var(--gris);
+    padding: 3rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.ordenes-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.orden-card {
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: 4px;
+    padding: 1.5rem;
+}
+
+.orden-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.orden-fecha {
+    font-size: 0.875rem;
+    color: var(--gris);
+}
+
+.orden-estado {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+    background: var(--dorado-claro);
+    color: var(--carbon);
+}
+
+.orden-estado-confirmado {
+    background: #d4edda;
+    color: #155724;
+}
+
+.orden-items {
+    list-style: none;
+    border-top: 1px solid var(--borde);
+    padding-top: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.orden-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.orden-item-nombre {
+    flex: 1;
+    color: var(--carbon);
+}
+
+.orden-item-cantidad {
+    color: var(--gris);
+    margin: 0 1rem;
+    font-size: 0.85rem;
+}
+
+.orden-item-precio {
+    font-weight: 500;
+    color: var(--carbon);
+}
+
+.orden-total {
+    border-top: 1px solid var(--borde);
+    padding-top: 0.75rem;
+    text-align: right;
+    font-size: 0.95rem;
+    color: var(--gris);
+}
+
+.orden-total strong {
+    color: var(--carbon);
+    font-size: 1.1rem;
+}
+
+@media (max-width: 600px) {
+    .ordenes-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

@@ -1,19 +1,31 @@
 import { supabase } from '@/lib/supabase'
 import { NextResponse } from 'next/server'
 
-// GET - Trae el carrito de un usuario
-export async function GET(request) {
-    const { searchParams } = new URL(request.url)
-    const user_id = searchParams.get('user_id')
+// Helper: verifica el token del header Authorization y devuelve el user
+async function getUsuarioAutenticado(request) {
+    const authHeader = request.headers.get('Authorization')
+    const token = authHeader?.replace('Bearer ', '')
 
-    if (!user_id) {
-        return NextResponse.json({ error: 'Falta user_id' }, { status: 400 })
+    if (!token) return null
+
+    const { data: { user }, error } = await supabase.auth.getUser(token)
+    if (error || !user) return null
+
+    return user
+}
+
+// GET - Trae el carrito del usuario autenticado
+export async function GET(request) {
+    const user = await getUsuarioAutenticado(request)
+
+    if (!user) {
+        return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     }
 
     const { data, error } = await supabase
         .from('carrito')
         .select('*, productos(*)')
-        .eq('user_id', user_id)
+        .eq('usuario_id', user.id)
 
     if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 })
@@ -22,19 +34,25 @@ export async function GET(request) {
     return NextResponse.json(data)
 }
 
-// POST - Agrega un producto al carrito
+// POST - Agrega o actualiza un producto en el carrito
 export async function POST(request) {
-    const { user_id, producto_id, cantidad } = await request.json()
+    const user = await getUsuarioAutenticado(request)
 
-    if (!user_id || !producto_id) {
-        return NextResponse.json({ error: 'Faltan datos' }, { status: 400 })
+    if (!user) {
+        return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
+    }
+
+    const { producto_id, cantidad } = await request.json()
+
+    if (!producto_id) {
+        return NextResponse.json({ error: 'Falta producto_id' }, { status: 400 })
     }
 
     // Si el producto ya está en el carrito, actualiza la cantidad
     const { data: existing } = await supabase
         .from('carrito')
         .select('*')
-        .eq('user_id', user_id)
+        .eq('usuario_id', user.id)
         .eq('producto_id', producto_id)
         .single()
 
@@ -52,7 +70,7 @@ export async function POST(request) {
     // Si no está, lo agrega
     const { data, error } = await supabase
         .from('carrito')
-        .insert({ user_id, producto_id, cantidad: cantidad || 1 })
+        .insert({ usuario_id: user.id, producto_id, cantidad: cantidad || 1 })
         .select()
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })

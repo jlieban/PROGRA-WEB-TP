@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCOOPER - Helados Artesanales</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header con navegación -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="LOGO.png" alt="SCOOPER Logo" class="logo-img">
+                <h1>SCOOPER</h1>
+            </div>
+            <nav class="nav">
+                <ul class="nav-menu">
+                    <li><a href="#inicio" class="nav-link">Inicio</a></li>
+                    <li><a href="#productos" class="nav-link">Productos</a></li>
+                    <li><a href="#nosotros" class="nav-link">Nosotros</a></li>
+                    <li><a href="#contacto" class="nav-link">Contacto</a></li>
+                </ul>
+            </nav>
+            <button class="carrito-btn" id="carritoBtn">
+                🛒 <span id="cantidadCarrito">0</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Sección principal (hero) -->
+    <section class="hero" id="inicio">
+        <div class="hero-content">
+            <h2>Helados Artesanales Premium</h2>
+            <p>Descubre nuestros deliciosos sabores únicos</p>
+            <button class="btn-primario" id="btnVerProductos">
+                Ver Productos
+            </button>
+        </div>
+    </section>
+
+    <!-- Sección de productos -->
+    <section class="productos" id="productos">
+        <div class="container">
+            <h2 class="seccion-titulo">Nuestros Sabores</h2>
+            <div class="grid-productos" id="gridProductos">
+                <!-- Los productos se cargarán dinámicamente desde JSON -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Carrito modal -->
+    <div class="modal" id="modalCarrito">
+        <div class="modal-content">
+            <span class="cerrar" id="cerrarModal">&times;</span>
+            <h2>Mi Carrito</h2>
+            <div class="carrito-items" id="carritoItems">
+                <!-- Los items del carrito se mostrarán aquí -->
+            </div>
+            <div class="carrito-total">
+                <h3>Total: $<span id="totalCarrito">0.00</span></h3>
+            </div>
+            <button class="btn-primario btn-comprar" id="btnComprar">Comprar</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 SCOOPER - Todos los derechos reservados</p>
+            <p>Elaborado con 💜 para los amantes del helado</p>
+        </div>
+    </footer>
+
+    <!-- Script -->
+    <script src="script.js"></script>
+</body>
+</html>

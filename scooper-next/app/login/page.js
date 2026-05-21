@@ -3,11 +3,10 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useUser } from '../context/UserContext'
+import { supabase } from '@/lib/supabase'
 
 export default function Login() {
     const router = useRouter()
-    const { login } = useUser()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [errores, setErrores] = useState({})
@@ -33,30 +32,23 @@ export default function Login() {
 
         const nuevosErrores = validarFormulario()
         setErrores(nuevosErrores)
-
         if (Object.keys(nuevosErrores).length > 0) return
 
         setCargando(true)
 
         try {
-            const respuesta = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            })
+            // Supabase Auth: verifica email y password contra auth.users
+            // Si es correcto, guarda la sesión automáticamente (localStorage + cookies)
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
-            const datos = await respuesta.json()
-
-            if (!respuesta.ok) {
-                setErrores({ general: datos.error || 'Error al iniciar sesión' })
+            if (error) {
+                setErrores({ general: 'Email o contraseña incorrectos.' })
                 return
             }
 
-            // Guardamos el usuario en el context (que también lo persiste en localStorage)
-            login(datos)
-
-            // Redirigimos al inicio con recarga completa para que el header lea el usuario
-            window.location.href = '/'
+            // La sesión quedó guardada; UserContext la detecta via onAuthStateChange.
+            // Con router.push() alcanza — no hace falta window.location.href
+            router.push('/')
         } catch (err) {
             setErrores({ general: 'Error de conexión. Intentá de nuevo.' })
         } finally {
