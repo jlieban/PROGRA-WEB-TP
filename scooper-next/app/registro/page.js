@@ -61,7 +61,7 @@ export default function Registro() {
 
     // Esta función corre cuando el usuario aprieta el botón "Crear cuenta".
     // El parámetro 'e' es el "evento" del submit que dispara el formulario.
-    function manejarSubmit(e) {
+    async function manejarSubmit(e) {
         // event.preventDefault() evita el comportamiento por defecto del navegador,
         // que sería: recargar la página y enviar los datos a la URL del form.
         // Como nosotros queremos manejar todo con JS, lo bloqueamos.
@@ -76,10 +76,25 @@ export default function Registro() {
             return
         }
 
-        // Si llegamos acá, todos los campos son válidos.
-        // En un proyecto real, ahora haríamos un fetch POST al backend.
-        // Como no tenemos backend, simulamos el éxito mostrando el mensaje.
-        setRegistrado(true)
+        // Enviamos los datos a la API route de registro
+        try {
+            const respuesta = await fetch('/api/auth/registro', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombre, email, password })
+            })
+
+            const datos = await respuesta.json()
+
+            if (!respuesta.ok) {
+                setErrores({ general: datos.error || 'Error al registrarse' })
+                return
+            }
+
+            setRegistrado(true)
+        } catch (err) {
+            setErrores({ general: 'Error de conexión. Intentá de nuevo.' })
+        }
     }
 
     // Si ya se registró con éxito, mostramos solo el mensaje.
@@ -103,6 +118,7 @@ export default function Registro() {
 
                 {/* noValidate desactiva la validación automática del navegador para
                     que solo se muestren NUESTROS mensajes de error personalizados. */}
+                {errores.general && <p className="form-error">{errores.general}</p>}
                 <form className="registro-form" onSubmit={manejarSubmit} noValidate>
 
                     {/* CAMPO 1 — Nombre */}

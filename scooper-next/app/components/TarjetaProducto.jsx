@@ -34,7 +34,7 @@ export default function TarjetaProducto({ producto, cantidadEnCarrito, onAgregar
                             <button className="btn-cantidad" onClick={() => onActualizarCantidad(producto.id, cantidadEnCarrito + 1)}>+</button>
                         </div>
                     ) : (
-                        <button className="btn-agregar" onClick={() => onAgregar(producto.id)}>
+                        <button className="btn-agregar" onClick={() => onAgregar(producto)}>
                             Agregar al carrito
                         </button>
                     )}

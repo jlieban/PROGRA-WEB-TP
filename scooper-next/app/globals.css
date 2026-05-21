@@ -112,6 +112,84 @@ body {
     color: var(--dorado);
 }
 
+/* ===== DROPDOWN USUARIO ===== */
+.nav-usuario {
+    position: relative;
+}
+
+.btn-usuario {
+    background: none;
+    border: 1px solid var(--borde);
+    color: var(--gris);
+    padding: 0.4rem 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+    font-family: var(--fuente-cuerpo);
+    font-size: 0.78rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: var(--radio);
+    transition: border-color var(--transicion), color var(--transicion);
+}
+
+.btn-usuario:hover {
+    border-color: var(--dorado);
+    color: var(--dorado);
+}
+
+.usuario-dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    min-width: 160px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    z-index: 200;
+    overflow: hidden;
+}
+
+.dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gris);
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--fuente-cuerpo);
+    text-align: left;
+    transition: background var(--transicion), color var(--transicion);
+}
+
+.dropdown-item:hover {
+    background: var(--crema);
+    color: var(--dorado);
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: var(--borde);
+    margin: 0;
+}
+
+.dropdown-cerrar {
+    color: #b00020;
+}
+
+.dropdown-cerrar:hover {
+    background: #fff0f0;
+    color: #b00020;
+}
+
 /* ===== HERO ===== */
 .hero {
     position: relative;

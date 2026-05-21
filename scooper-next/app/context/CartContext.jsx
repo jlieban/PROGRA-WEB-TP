@@ -1,7 +1,6 @@
 'use client'
 
 import { createContext, useContext, useState } from 'react'
-import productos from '../datos/productos'
 
 const CarritoContext = createContext(null)
 
@@ -16,12 +15,12 @@ export function CarritoProvider({ children }) {
         setTimeout(() => setToast({ visible: false, mensaje: '' }), 2800)
     }
 
-    function agregarAlCarrito(idProducto, cantidad = 1) {
-        const producto = productos.find(p => p.id === idProducto)
+    // Ahora recibe el objeto producto completo en vez de solo el id
+    function agregarAlCarrito(producto, cantidad = 1) {
         setCarrito(prev => {
-            const item = prev.find(i => i.id === idProducto)
+            const item = prev.find(i => i.id === producto.id)
             if (item) {
-                return prev.map(i => i.id === idProducto ? { ...i, cantidad: i.cantidad + cantidad } : i)
+                return prev.map(i => i.id === producto.id ? { ...i, cantidad: i.cantidad + cantidad } : i)
             }
             return [...prev, { ...producto, cantidad }]
         })

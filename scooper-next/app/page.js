@@ -28,7 +28,7 @@ export default function Home() {
                 // Pedimos el JSON que vive en /public/productos.json.
                 // Next.js sirve la carpeta /public en la raíz del sitio,
                 // así que la URL es simplemente "/productos.json".
-                const respuesta = await fetch('/productos.json')
+                const respuesta = await fetch('/api/productos')
 
                 if (!respuesta.ok) {
                     throw new Error(`Error HTTP: ${respuesta.status}`)
@@ -39,7 +39,7 @@ export default function Home() {
 
                 // Guardamos los productos en el estado. Esto dispara un
                 // re-render automático del componente con los datos nuevos.
-                setProductos(datos.productos)
+                setProductos(datos)
             } catch (err) {
                 console.error('No se pudieron cargar los productos:', err)
                 setError('No pudimos cargar los productos. Probá recargar la página.')

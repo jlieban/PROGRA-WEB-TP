@@ -1,8 +1,38 @@
 'use client'
 
 import Link from 'next/link'
+import { useState, useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function Header({ totalItems, onOpenCarrito }) {
+    const [usuario, setUsuario] = useState(null)
+    const [dropdownAbierto, setDropdownAbierto] = useState(false)
+    const dropdownRef = useRef(null)
+    const router = useRouter()
+
+    useEffect(() => {
+        const guardado = localStorage.getItem('usuario')
+        if (guardado) setUsuario(JSON.parse(guardado))
+    }, [])
+
+    // Cierra el dropdown si el usuario hace clic afuera
+    useEffect(() => {
+        function handleClickAfuera(e) {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+                setDropdownAbierto(false)
+            }
+        }
+        document.addEventListener('mousedown', handleClickAfuera)
+        return () => document.removeEventListener('mousedown', handleClickAfuera)
+    }, [])
+
+    function cerrarSesion() {
+        localStorage.removeItem('usuario')
+        setUsuario(null)
+        setDropdownAbierto(false)
+        router.push('/')
+    }
+
     return (
         <header className="header">
             <div className="container header-inner">
@@ -14,7 +44,53 @@ export default function Header({ totalItems, onOpenCarrito }) {
                         <li><Link href="/#inicio" className="nav-link">Inicio</Link></li>
                         <li><Link href="/#sabores" className="nav-link">Sabores</Link></li>
                         <li><Link href="/#contacto" className="nav-link">Contacto</Link></li>
-                        <li><Link href="/registro" className="nav-link">Crear cuenta</Link></li>
+                        <li className="nav-usuario" ref={dropdownRef}>
+                            {usuario ? (
+                                // Usuario logueado: muestra su nombre con dropdown
+                                <>
+                                    <button
+                                        className="btn-usuario"
+                                        onClick={() => setDropdownAbierto(!dropdownAbierto)}
+                                    >
+                                        {usuario.nombre}
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <polyline points="6 9 12 15 18 9"/>
+                                        </svg>
+                                    </button>
+                                    {dropdownAbierto && (
+                                        <div className="usuario-dropdown">
+                                            <button className="dropdown-item dropdown-cerrar" onClick={cerrarSesion}>
+                                                Cerrar sesión
+                                            </button>
+                                        </div>
+                                    )}
+                                </>
+                            ) : (
+                                // Sin sesión: botón de login con opción de registro abajo
+                                <>
+                                    <button
+                                        className="btn-usuario"
+                                        onClick={() => setDropdownAbierto(!dropdownAbierto)}
+                                    >
+                                        Iniciar sesión
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <polyline points="6 9 12 15 18 9"/>
+                                        </svg>
+                                    </button>
+                                    {dropdownAbierto && (
+                                        <div className="usuario-dropdown">
+                                            <Link href="/login" className="dropdown-item" onClick={() => setDropdownAbierto(false)}>
+                                                Iniciar sesión
+                                            </Link>
+                                            <div className="dropdown-divider"/>
+                                            <Link href="/registro" className="dropdown-item" onClick={() => setDropdownAbierto(false)}>
+                                                Crear cuenta
+                                            </Link>
+                                        </div>
+                                    )}
+                                </>
+                            )}
+                        </li>
                     </ul>
                 </nav>
                 <button className="carrito-btn" onClick={onOpenCarrito} aria-label="Abrir carrito">
