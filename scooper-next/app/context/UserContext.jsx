@@ -1,18 +1,18 @@
 'use client'
 
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 
 const UserContext = createContext(null)
 
 export function UserProvider({ children }) {
-    // Inicializamos directo desde localStorage para evitar el flash de "no logueado"
-    const [usuario, setUsuario] = useState(() => {
-        if (typeof window !== 'undefined') {
-            const guardado = localStorage.getItem('usuario')
-            return guardado ? JSON.parse(guardado) : null
-        }
-        return null
-    })
+    const [usuario, setUsuario] = useState(null)
+
+    // useEffect corre solo en el cliente, después de la hidratación
+    // Es la única forma segura de leer localStorage en Next.js
+    useEffect(() => {
+        const guardado = localStorage.getItem('usuario')
+        if (guardado) setUsuario(JSON.parse(guardado))
+    }, [])
 
     function login(datos) {
         localStorage.setItem('usuario', JSON.stringify(datos))
