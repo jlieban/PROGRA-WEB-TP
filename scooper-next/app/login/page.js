@@ -3,9 +3,11 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useUser } from '../context/UserContext'
 
 export default function Login() {
     const router = useRouter()
+    const { login } = useUser()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [errores, setErrores] = useState({})
@@ -50,11 +52,11 @@ export default function Login() {
                 return
             }
 
-            // Guardamos el usuario en localStorage para mantener la sesión
-            localStorage.setItem('usuario', JSON.stringify(datos))
+            // Guardamos el usuario en el context (que también lo persiste en localStorage)
+            login(datos)
 
-            // Redirigimos al inicio
-            router.push('/')
+            // Redirigimos al inicio con recarga completa para que el header lea el usuario
+            window.location.href = '/'
         } catch (err) {
             setErrores({ general: 'Error de conexión. Intentá de nuevo.' })
         } finally {

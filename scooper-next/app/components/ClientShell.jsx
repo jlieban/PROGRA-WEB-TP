@@ -1,6 +1,7 @@
 'use client'
 
 import { CarritoProvider, useCarrito } from '../context/CartContext'
+import { UserProvider } from '../context/UserContext'
 import Header from './Header'
 import Footer from './Footer'
 import ModalCarrito from './ModalCarrito'
@@ -42,8 +43,10 @@ function ShellInner({ children }) {
 
 export default function ClientShell({ children }) {
     return (
-        <CarritoProvider>
-            <ShellInner>{children}</ShellInner>
-        </CarritoProvider>
+        <UserProvider>
+            <CarritoProvider>
+                <ShellInner>{children}</ShellInner>
+            </CarritoProvider>
+        </UserProvider>
     )
 }

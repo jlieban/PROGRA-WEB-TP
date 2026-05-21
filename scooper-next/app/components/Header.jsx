@@ -3,17 +3,13 @@
 import Link from 'next/link'
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import { useUser } from '../context/UserContext'
 
 export default function Header({ totalItems, onOpenCarrito }) {
-    const [usuario, setUsuario] = useState(null)
+    const { usuario, logout } = useUser()
     const [dropdownAbierto, setDropdownAbierto] = useState(false)
     const dropdownRef = useRef(null)
     const router = useRouter()
-
-    useEffect(() => {
-        const guardado = localStorage.getItem('usuario')
-        if (guardado) setUsuario(JSON.parse(guardado))
-    }, [])
 
     // Cierra el dropdown si el usuario hace clic afuera
     useEffect(() => {
@@ -27,8 +23,7 @@ export default function Header({ totalItems, onOpenCarrito }) {
     }, [])
 
     function cerrarSesion() {
-        localStorage.removeItem('usuario')
-        setUsuario(null)
+        logout()
         setDropdownAbierto(false)
         router.push('/')
     }
