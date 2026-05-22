@@ -1,17 +1,44 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { useCarrito } from '../../context/CartContext'
-import productos from '../../datos/productos'
 
 export default function ProductoPage() {
     const { id } = useParams()
-    const producto = productos.find(p => p.id === Number(id))
     const { agregarAlCarrito } = useCarrito()
+    const [producto, setProducto] = useState(null)
     const [cantidad, setCantidad] = useState(1)
     const [imgError, setImgError] = useState(false)
+    const [cargando, setCargando] = useState(true)
+
+    useEffect(() => {
+        async function cargarProducto() {
+            try {
+                const res = await fetch(`/api/productos/${id}`)
+                if (!res.ok) { setProducto(null); return }
+                const datos = await res.json()
+                setProducto(datos)
+            } finally {
+                setCargando(false)
+            }
+        }
+        cargarProducto()
+    }, [id])
+
+    function confirmar() {
+        // Pasamos el objeto completo para que CartContext tenga nombre, precio, etc.
+        agregarAlCarrito(producto, cantidad)
+    }
+
+    if (cargando) {
+        return (
+            <main className="container" style={{ padding: '8rem 2rem', textAlign: 'center' }}>
+                <p>Cargando...</p>
+            </main>
+        )
+    }
 
     if (!producto) {
         return (
@@ -20,10 +47,6 @@ export default function ProductoPage() {
                 <Link href="/" className="nav-link">← Volver</Link>
             </main>
         )
-    }
-
-    function confirmar() {
-        agregarAlCarrito(producto.id, cantidad)
     }
 
     return (
