@@ -1,4 +1,5 @@
 import { supabase, createAuthClient } from '@/lib/supabase'
+import { client, Preference } from '@/lib/mercadopago'
 import { NextResponse } from 'next/server'
 
 export async function POST(request) {
@@ -31,7 +32,6 @@ export async function POST(request) {
         return NextResponse.json({ error: 'Orden no encontrada' }, { status: 404 })
     }
 
-    // 3. Verificar que está pendiente de pago
     if (orden.estado !== 'pendiente') {
         return NextResponse.json(
             { error: `La orden no está pendiente (estado actual: ${orden.estado})` },
@@ -39,28 +39,49 @@ export async function POST(request) {
         )
     }
 
-    // 4. Verificar que tiene items
     if (!orden.orden_items || orden.orden_items.length === 0) {
         return NextResponse.json({ error: 'La orden no tiene items' }, { status: 400 })
     }
 
-    // 5. Construir estructura de preferencia para Mercado Pago (semana 13)
-    const preferencia = {
-        items: orden.orden_items.map(item => ({
-            title: item.productos.nombre,
-            quantity: item.cantidad,
-            unit_price: Number(item.precio_unitario),
-            currency_id: 'ARS'
-        })),
-        payer: {
-            email: user.email
-        },
-        external_reference: String(orden_id),
-        notification_url: `${process.env.NEXT_PUBLIC_URL}/api/pagos/webhook`
-    }
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://scooper-prograwebtp.vercel.app'
 
-    return NextResponse.json({
-        preferencia,
-        mensaje: 'Estructura lista para Mercado Pago'
-    })
+    // 3. Crear preferencia con SDK de Mercado Pago
+    try {
+        const preference = new Preference(client)
+
+        const response = await preference.create({
+            body: {
+                items: orden.orden_items.map(item => ({
+                    id: String(item.producto_id),
+                    title: item.productos.nombre,
+                    quantity: item.cantidad,
+                    unit_price: Number(item.precio_unitario),
+                    currency_id: 'ARS'
+                })),
+                payer: {
+                    email: user.email
+                },
+                back_urls: {
+                    success: `${appUrl}/pago-completado`,
+                    failure: `${appUrl}/pago-fallido`,
+                    pending: `${appUrl}/pago-pendiente`
+                },
+                auto_return: 'approved',
+                external_reference: String(orden_id),
+                notification_url: `${appUrl}/api/webhooks/mercado-pago`
+            }
+        })
+
+        return NextResponse.json({
+            init_point: response.init_point,
+            preference_id: response.id
+        })
+
+    } catch (err) {
+        console.error('Error Mercado Pago:', err)
+        return NextResponse.json(
+            { error: 'Error al crear preferencia de pago' },
+            { status: 500 }
+        )
+    }
 }

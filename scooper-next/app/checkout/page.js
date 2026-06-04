@@ -47,8 +47,9 @@ function CheckoutContent() {
             })
             const result = await res.json()
             if (!res.ok) { setError(result.error); return }
-            // Semana 13: acá se redirigirá a result.init_point de Mercado Pago
-            alert('Estructura lista. Integración con Mercado Pago se completa en semana 13.')
+
+            // Redirigir a Mercado Pago
+            window.location.href = result.init_point
         } catch {
             setError('Error de conexión')
         } finally {
@@ -63,15 +64,16 @@ function CheckoutContent() {
             <h1>Checkout</h1>
 
             <div style={{
-                border: '1px solid #ddd',
+                background: '#fff',
+                borderLeft: '4px solid #3498db',
                 borderRadius: 8,
                 padding: '1.5rem',
                 marginBottom: '1.5rem',
-                background: '#f9f9f9'
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
             }}>
                 <p><strong>Orden #{orden.id}</strong></p>
                 <p>Estado: <span style={{ textTransform: 'capitalize' }}>{orden.estado}</span></p>
-                <p style={{ fontSize: '1.5rem', fontWeight: 'bold', marginTop: '0.5rem' }}>
+                <p style={{ fontSize: '1.8rem', fontWeight: 'bold', marginTop: '0.5rem', color: '#2c3e50' }}>
                     Total: ${orden.total?.toLocaleString('es-AR')}
                 </p>
             </div>
@@ -86,16 +88,21 @@ function CheckoutContent() {
                 style={{
                     width: '100%',
                     padding: '1rem',
-                    background: procesando ? '#ccc' : '#009ee3',
+                    background: procesando || orden.estado !== 'pendiente' ? '#ccc' : '#27ae60',
                     color: '#fff',
                     border: 'none',
                     borderRadius: 8,
                     fontSize: '1rem',
+                    fontWeight: 'bold',
                     cursor: procesando ? 'not-allowed' : 'pointer'
                 }}
             >
-                {procesando ? 'Procesando...' : 'Pagar con Mercado Pago'}
+                {procesando ? 'Redirigiendo...' : 'Pagar con Mercado Pago'}
             </button>
+
+            <p style={{ fontSize: '0.8rem', color: '#888', textAlign: 'center', marginTop: '0.75rem' }}>
+                🔒 Pago seguro procesado por Mercado Pago
+            </p>
 
             <Link href="/ordenes" style={{ display: 'block', marginTop: '1rem', textAlign: 'center', color: '#555' }}>
                 ← Volver a mis órdenes
