@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
 const CarritoContext = createContext(null)
@@ -10,6 +11,7 @@ export function CarritoProvider({ children }) {
     const [modalAbierto, setModalAbierto] = useState(false)
     const [celebrando, setCelebrando] = useState(false)
     const [toast, setToast] = useState({ visible: false, mensaje: '' })
+    const router = useRouter()
 
     function mostrarToast(mensaje) {
         setToast({ visible: true, mensaje })
@@ -134,9 +136,12 @@ export function CarritoProvider({ children }) {
         }
 
         // La BD ya vació el carrito, limpiamos el estado local también
+        const datos = await res.json()
         setCarrito([])
         setModalAbierto(false)
-        setCelebrando(true)
+
+        // Redirigir al checkout con el orden_id
+        router.push(`/checkout?orden_id=${datos.orden_id}`)
         return true
     }
 
