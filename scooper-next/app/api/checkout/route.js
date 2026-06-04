@@ -42,34 +42,26 @@ export async function POST(request) {
         0
     )
 
-    // 5. Crear la orden
-    const { data: orden, error: ordenError } = await db
-        .from('ordenes')
-        .insert({ usuario_id: user.id, total, estado: 'confirmado' })
-        .select()
-        .single()
-
-    if (ordenError) return NextResponse.json({ error: ordenError.message }, { status: 500 })
-
-    // 6. Guardar items de la orden
-    const ordenItems = carritoItems.map(item => ({
-        orden_id: orden.id,
+    // 5. Preparar items para el stored procedure
+    const items = carritoItems.map(item => ({
         producto_id: item.producto.id,
         cantidad: item.cantidad,
-        precio_unitario: item.producto.precio
+        precio: item.producto.precio
     }))
-    await db.from('orden_items').insert(ordenItems)
 
-    // 7. Descontar stock
-    for (const item of carritoItems) {
-        await db
-            .from('productos')
-            .update({ stock: item.producto.stock - item.cantidad })
-            .eq('id', item.producto.id)
+    // 6. Llamar al stored procedure (transacción atómica: crea orden + items + descuenta stock + vacía carrito)
+    const { data, error: rpcError } = await db.rpc('crear_orden_completa', {
+        p_usuario_id: user.id,
+        p_items: items,
+        p_total: total
+    })
+
+    if (rpcError || !data?.[0]?.success) {
+        return NextResponse.json(
+            { error: data?.[0]?.error_msg || rpcError?.message || 'Error al crear la orden' },
+            { status: 500 }
+        )
     }
 
-    // 8. Vaciar carrito
-    await db.from('carrito').delete().eq('usuario_id', user.id)
-
-    return NextResponse.json({ mensaje: '¡Compra confirmada!', orden })
+    return NextResponse.json({ mensaje: '¡Compra confirmada!', orden_id: data[0].orden_id })
 }
