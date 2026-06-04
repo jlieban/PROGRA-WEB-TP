@@ -1,10 +1,10 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 
-export default function Checkout() {
+function CheckoutContent() {
     const searchParams = useSearchParams()
     const router = useRouter()
     const ordenId = searchParams.get('orden_id')
@@ -101,5 +101,13 @@ export default function Checkout() {
                 ← Volver a mis órdenes
             </Link>
         </main>
+    )
+}
+
+export default function Checkout() {
+    return (
+        <Suspense fallback={<p style={{ padding: '2rem' }}>Cargando...</p>}>
+            <CheckoutContent />
+        </Suspense>
     )
 }
