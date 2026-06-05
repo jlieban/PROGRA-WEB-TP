@@ -101,12 +101,29 @@ export function CarritoProvider({ children }) {
         }
     }
 
-    function actualizarCantidad(idProducto, cantidad) {
+    async function actualizarCantidad(idProducto, cantidad) {
         if (cantidad < 1) {
             eliminarDelCarrito(idProducto)
             return
         }
+        // Actualizar estado local inmediatamente
         setCarrito(prev => prev.map(i => i.id === idProducto ? { ...i, cantidad } : i))
+
+        // Sincronizar con la BD
+        const token = await getToken()
+        if (token) {
+            const item = carrito.find(i => i.id === idProducto)
+            if (item?.carritoId) {
+                await fetch(`/api/carrito/${item.carritoId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ cantidad })
+                })
+            }
+        }
     }
 
     async function finalizarCompra() {
