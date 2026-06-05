@@ -15,7 +15,7 @@ export default function Login() {
     function validarFormulario() {
         const nuevosErrores = {}
 
-        const formatoEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        const formatoEmail = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/
         if (!formatoEmail.test(email)) {
             nuevosErrores.email = 'El email no tiene un formato válido.'
         }

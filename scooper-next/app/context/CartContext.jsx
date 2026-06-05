@@ -110,10 +110,12 @@ export function CarritoProvider({ children }) {
     }
 
     async function finalizarCompra() {
-        if (carrito.length === 0) {
-            mostrarToast('El carrito está vacío')
-            return false
-        }
+    console.log('CLICK EN FINALIZAR COMPRA')
+
+    if (carrito.length === 0) {
+        mostrarToast('El carrito está vacío')
+        return false
+    }
 
         const token = await getToken()
         if (!token) {

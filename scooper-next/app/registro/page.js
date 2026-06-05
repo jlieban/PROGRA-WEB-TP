@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
 export default function Registro() {
@@ -13,6 +14,7 @@ export default function Registro() {
     const [errores, setErrores] = useState({})
     const [registrado, setRegistrado] = useState(false)
     const [cargando, setCargando] = useState(false)
+    const router = useRouter()
 
     function validarFormulario() {
         const nuevosErrores = {}
@@ -21,7 +23,7 @@ export default function Registro() {
             nuevosErrores.nombre = 'El nombre debe tener al menos 2 caracteres.'
         }
 
-        const formatoEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        const formatoEmail = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/
         if (!formatoEmail.test(email)) {
             nuevosErrores.email = 'El email no tiene un formato válido.'
         }
@@ -66,7 +68,15 @@ export default function Registro() {
                 return
             }
 
-            setRegistrado(true)
+            // Hacer login automático con las mismas credenciales
+            const { error: loginError } = await supabase.auth.signInWithPassword({ email, password })
+
+            if (loginError) {
+                // Si falla (ej: confirmación de email requerida), mostrar mensaje
+                setRegistrado(true)
+            } else {
+                router.push('/')
+            }
         } catch (err) {
             setErrores({ general: 'Error de conexión. Intentá de nuevo.' })
         } finally {
