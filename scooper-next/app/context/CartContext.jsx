@@ -140,12 +140,17 @@ export function CarritoProvider({ children }) {
             return false
         }
 
+        // Enviamos los items del carrito local (siempre correcto)
+        // El servidor valida precios desde la BD, pero confía en las cantidades del cliente
         const res = await fetch('/api/checkout', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
-            }
+            },
+            body: JSON.stringify({
+                items: carrito.map(i => ({ producto_id: i.id, cantidad: i.cantidad }))
+            })
         })
 
         if (!res.ok) {

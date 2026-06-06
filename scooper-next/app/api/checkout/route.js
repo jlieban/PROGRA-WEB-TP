@@ -11,45 +11,53 @@ export async function POST(request) {
         return NextResponse.json({ error: 'Debés iniciar sesión para confirmar la compra' }, { status: 401 })
     }
 
-    // Cliente autenticado: las queries llevan el JWT → RLS funciona
     const db = createAuthClient(token)
 
-    // 2. Leer carrito del usuario desde la BD
-    const { data: carritoItems, error: carritoError } = await db
-        .from('carrito')
-        .select('id, cantidad, producto:productos(id, nombre, precio, stock)')
-        .eq('usuario_id', user.id)
+    // 2. Leer los items del carrito enviados por el cliente
+    const body = await request.json()
+    const clientItems = body?.items
 
-    if (carritoError) return NextResponse.json({ error: carritoError.message }, { status: 500 })
-
-    if (!carritoItems || carritoItems.length === 0) {
+    if (!clientItems || clientItems.length === 0) {
         return NextResponse.json({ error: 'El carrito está vacío' }, { status: 400 })
     }
 
-    // 3. Validar stock
-    for (const item of carritoItems) {
-        if (item.producto.stock < item.cantidad) {
+    // 3. Buscar los precios y stock actuales desde la BD (nunca confiar en precios del cliente)
+    const productoIds = clientItems.map(i => i.producto_id)
+    const { data: productos, error: prodError } = await db
+        .from('productos')
+        .select('id, nombre, precio, stock')
+        .in('id', productoIds)
+
+    if (prodError) return NextResponse.json({ error: prodError.message }, { status: 500 })
+
+    // 4. Validar que todos los productos existen y tienen stock suficiente
+    for (const item of clientItems) {
+        const producto = productos.find(p => p.id === item.producto_id)
+        if (!producto) {
+            return NextResponse.json({ error: `Producto no encontrado` }, { status: 400 })
+        }
+        if (producto.stock < item.cantidad) {
             return NextResponse.json(
-                { error: `Stock insuficiente para ${item.producto.nombre}` },
+                { error: `Stock insuficiente para ${producto.nombre}` },
                 { status: 400 }
             )
         }
     }
 
-    // 4. Calcular total en el servidor (nunca confiar en el cliente)
-    const total = carritoItems.reduce(
-        (sum, item) => sum + item.producto.precio * item.cantidad,
-        0
-    )
+    // 5. Calcular total en el servidor con precios de la BD
+    const total = clientItems.reduce((sum, item) => {
+        const producto = productos.find(p => p.id === item.producto_id)
+        return sum + producto.precio * item.cantidad
+    }, 0)
 
-    // 5. Preparar items para el stored procedure
-    const items = carritoItems.map(item => ({
-        producto_id: item.producto.id,
+    // 6. Preparar items para el stored procedure
+    const items = clientItems.map(item => ({
+        producto_id: item.producto_id,
         cantidad: item.cantidad,
-        precio: item.producto.precio
+        precio: productos.find(p => p.id === item.producto_id).precio
     }))
 
-    // 6. Llamar al stored procedure (transacción atómica: crea orden + items + descuenta stock + vacía carrito)
+    // 7. Llamar al stored procedure (transacción atómica)
     const { data, error: rpcError } = await db.rpc('crear_orden_completa', {
         p_usuario_id: user.id,
         p_items: items,
