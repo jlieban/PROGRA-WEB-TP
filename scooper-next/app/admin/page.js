@@ -25,10 +25,9 @@ export default function Admin() {
 
     useEffect(() => {
         if (usuario === undefined) return // todavía cargando
-        if (usuario === null) { router.push('/login'); return }
-        if (usuario.rol && usuario.rol !== 'admin') { router.push('/'); return }
+        if (usuario === null) return // sesión cerrada, el header redirige
         if (usuario.rol === 'admin') cargarDatos()
-    }, [usuario])
+    }, [usuario?.rol])
 
     async function getToken() {
         const { data: { session } } = await supabase.auth.getSession()

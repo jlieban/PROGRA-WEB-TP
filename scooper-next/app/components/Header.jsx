@@ -24,8 +24,7 @@ export default function Header({ totalItems, onOpenCarrito }) {
 
     async function cerrarSesion() {
         await logout()
-        setDropdownAbierto(false)
-        router.push('/')
+        window.location.href = '/'
     }
 
     return (
