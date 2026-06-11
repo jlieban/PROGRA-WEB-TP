@@ -115,6 +115,37 @@ body {
 /* ===== DROPDOWN USUARIO ===== */
 .nav-usuario {
     position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.nav-usuario-nombre {
+    font-size: 0.78rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gris);
+}
+
+.btn-cerrar-sesion {
+    background: none;
+    border: 1px solid var(--borde);
+    color: var(--gris);
+    padding: 0.4rem 0.9rem;
+    cursor: pointer;
+    font-family: var(--fuente-cuerpo);
+    font-size: 0.78rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: var(--radio);
+    transition: border-color var(--transicion), color var(--transicion);
+}
+
+.btn-cerrar-sesion:hover {
+    border-color: var(--dorado);
+    color: var(--dorado);
 }
 
 .btn-usuario {

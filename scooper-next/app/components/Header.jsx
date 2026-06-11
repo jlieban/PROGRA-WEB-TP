@@ -2,14 +2,12 @@
 
 import Link from 'next/link'
 import { useState, useEffect, useRef } from 'react'
-import { useRouter } from 'next/navigation'
 import { useUser } from '../context/UserContext'
 
 export default function Header({ totalItems, onOpenCarrito }) {
     const { usuario, logout } = useUser()
     const [dropdownAbierto, setDropdownAbierto] = useState(false)
     const dropdownRef = useRef(null)
-    const router = useRouter()
 
     // Cierra el dropdown si el usuario hace clic afuera
     useEffect(() => {
@@ -42,34 +40,18 @@ export default function Header({ totalItems, onOpenCarrito }) {
                         {usuario && <li><Link href="/ordenes" className="nav-link">Órdenes</Link></li>}
                         {usuario?.rol === 'admin' && <li><Link href="/admin" className="nav-link">Admin</Link></li>}
                         <li><a href="/#contacto" className="nav-link">Contacto</a></li>
-                        <li className="nav-usuario" ref={dropdownRef}>
+                        <li className="nav-usuario">
                             {usuario ? (
-                                // Usuario logueado: muestra su nombre con dropdown
+                                // Usuario logueado: nombre + botón cerrar sesión directo
                                 <>
-                                    <button
-                                        className="btn-usuario"
-                                        onClick={() => setDropdownAbierto(!dropdownAbierto)}
-                                    >
-                                        {usuario.nombre}
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                            <polyline points="6 9 12 15 18 9"/>
-                                        </svg>
+                                    <span className="nav-usuario-nombre">{usuario.nombre}</span>
+                                    <button className="btn-cerrar-sesion" onClick={cerrarSesion}>
+                                        Cerrar sesión
                                     </button>
-                                    {dropdownAbierto && (
-                                        <div className="usuario-dropdown">
-                                            <Link href="/ordenes" className="dropdown-item" onClick={() => setDropdownAbierto(false)}>
-                                                Mis pedidos
-                                            </Link>
-                                            <div className="dropdown-divider"/>
-                                            <button className="dropdown-item dropdown-cerrar" onClick={cerrarSesion}>
-                                                Cerrar sesión
-                                            </button>
-                                        </div>
-                                    )}
                                 </>
                             ) : (
-                                // Sin sesión: botón de login con opción de registro abajo
-                                <>
+                                // Sin sesión: dropdown con login y registro
+                                <div ref={dropdownRef}>
                                     <button
                                         className="btn-usuario"
                                         onClick={() => setDropdownAbierto(!dropdownAbierto)}
@@ -90,7 +72,7 @@ export default function Header({ totalItems, onOpenCarrito }) {
                                             </Link>
                                         </div>
                                     )}
-                                </>
+                                </div>
                             )}
                         </li>
                     </ul>
