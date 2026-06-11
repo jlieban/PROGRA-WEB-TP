@@ -4,6 +4,7 @@ import Hero from './components/Hero';
 import GridProductos from './components/GridProductos';
 import ModalCarrito from './components/ModalCarrito';
 import ModalProducto from './components/ModalProducto';
+import ModalOrdenes from './components/ModalOrdenes';
 import CelebracionCompra from './components/CelebracionCompra';
 import Footer from './components/Footer';
 import Toast from './components/Toast';
@@ -12,6 +13,8 @@ import productos from './datos/productos';
 function App() {
     const [carrito, setCarrito] = useState([]);
     const [modalAbierto, setModalAbierto] = useState(false);
+    const [modalOrdenesAbierto, setModalOrdenesAbierto] = useState(false);
+    const [ordenes, setOrdenes] = useState([]);
     const [productoDetalle, setProductoDetalle] = useState(null);
     const [celebrando, setCelebrando] = useState(false);
     const [toast, setToast] = useState({ visible: false, mensaje: '' });
@@ -50,6 +53,13 @@ function App() {
             mostrarToast('El carrito está vacío');
             return;
         }
+        const total = carrito.reduce((sum, i) => sum + i.precio * i.cantidad, 0);
+        const nuevaOrden = {
+            items: carrito.map(i => ({ ...i })),
+            total,
+            fecha: new Date().toLocaleDateString('es-AR', { day: '2-digit', month: 'long', year: 'numeric' }),
+        };
+        setOrdenes(prev => [...prev, nuevaOrden]);
         setCarrito([]);
         setModalAbierto(false);
         setCelebrando(true);
@@ -59,7 +69,7 @@ function App() {
 
     return (
         <>
-            <Header totalItems={totalItems} onOpenCarrito={() => setModalAbierto(true)} />
+            <Header totalItems={totalItems} onOpenCarrito={() => setModalAbierto(true)} onOpenOrdenes={() => setModalOrdenesAbierto(true)} />
             <main>
                 <Hero />
                 <GridProductos
@@ -82,6 +92,11 @@ function App() {
                 onEliminar={eliminarDelCarrito}
                 onActualizarCantidad={actualizarCantidad}
                 onComprar={finalizarCompra}
+            />
+            <ModalOrdenes
+                abierto={modalOrdenesAbierto}
+                ordenes={ordenes}
+                onClose={() => setModalOrdenesAbierto(false)}
             />
             <Footer />
             <Toast visible={toast.visible} mensaje={toast.mensaje} />

@@ -389,6 +389,7 @@ body {
     font-weight: 400;
     cursor: pointer;
     flex: 1;
+    text-align: center;
     transition: color var(--transicion), border-color var(--transicion);
     border-radius: var(--radio);
 }
@@ -770,6 +771,72 @@ body {
 @keyframes aparecer {
     from { opacity: 0; transform: translateY(10px); }
     to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== NAV LINK BUTTON ===== */
+.nav-link-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--fuente-cuerpo);
+    padding: 0;
+}
+
+/* ===== ÓRDENES ===== */
+.orden-item {
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    padding: 1rem 1.2rem;
+    margin-bottom: 1rem;
+    background-color: var(--blanco);
+}
+
+.orden-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+}
+
+.orden-numero {
+    font-family: var(--fuente-display);
+    font-size: 0.95rem;
+    color: var(--carbon);
+}
+
+.orden-fecha {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gris);
+}
+
+.orden-productos {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 0.8rem;
+}
+
+.orden-producto-linea {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    color: var(--gris);
+}
+
+.orden-total {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 0.7rem;
+    border-top: 1px solid var(--borde);
+    font-size: 0.85rem;
+}
+
+.orden-total strong {
+    font-family: var(--fuente-display);
+    color: var(--carbon);
 }
 
 /* ===== FOOTER ===== */

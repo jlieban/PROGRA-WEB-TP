@@ -1,4 +1,4 @@
-function Header({ totalItems, onOpenCarrito }) {
+function Header({ totalItems, onOpenCarrito, onOpenOrdenes }) {
     return (
         <header className="header">
             <div className="container header-inner">
@@ -9,6 +9,7 @@ function Header({ totalItems, onOpenCarrito }) {
                     <ul className="nav-menu">
                         <li><a href="#inicio" className="nav-link">Inicio</a></li>
                         <li><a href="#sabores" className="nav-link">Sabores</a></li>
+                        <li><button className="nav-link nav-link-btn" onClick={onOpenOrdenes}>Órdenes</button></li>
                         <li><a href="#contacto" className="nav-link">Contacto</a></li>
                     </ul>
                 </nav>
