@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabase'
 const UserContext = createContext(null)
 
 export function UserProvider({ children }) {
-    const [usuario, setUsuario] = useState(null)
+    const [usuario, setUsuario] = useState(undefined)
 
     useEffect(() => {
         // Leer la sesión activa al montar el componente
@@ -15,8 +15,11 @@ export function UserProvider({ children }) {
                 setUsuario({
                     id: session.user.id,
                     email: session.user.email,
-                    nombre: session.user.user_metadata?.nombre || session.user.email
+                    nombre: session.user.user_metadata?.nombre || session.user.email,
+                    rol: 'cliente'
                 })
+            } else {
+                setUsuario(null)
             }
         })
 

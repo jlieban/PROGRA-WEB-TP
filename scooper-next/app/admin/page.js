@@ -18,8 +18,10 @@ export default function Admin() {
     const [form, setForm] = useState({ nombre: '', descripcion: '', precio: '', stock: '', imagen: '' })
 
     useEffect(() => {
+        if (usuario === undefined) return // todavía cargando
         if (usuario === null) { router.push('/login'); return }
-        if (usuario) cargarDatos()
+        if (usuario.rol && usuario.rol !== 'admin') { router.push('/'); return }
+        if (usuario.rol === 'admin') cargarDatos()
     }, [usuario])
 
     async function getToken() {
