@@ -2,12 +2,18 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { useUser } from '../context/UserContext'
 
 export default function Admin() {
-    const { usuario } = useUser()
+    const { usuario, logout } = useUser()
     const router = useRouter()
+
+    async function cerrarSesion() {
+        await logout()
+        router.push('/')
+    }
     const [tab, setTab] = useState('ordenes')
     const [ordenes, setOrdenes] = useState([])
     const [productos, setProductos] = useState([])
@@ -102,6 +108,7 @@ export default function Admin() {
         <main className="admin-container">
             <div className="admin-header">
                 <h1 className="admin-titulo">Panel de administración</h1>
+                <button onClick={cerrarSesion} className="btn-cancelar">Cerrar sesión</button>
             </div>
 
             <div className="admin-tabs">
