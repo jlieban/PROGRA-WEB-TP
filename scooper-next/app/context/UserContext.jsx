@@ -22,12 +22,20 @@ export function UserProvider({ children }) {
 
         // Escuchar cambios de sesión en tiempo real:
         // dispara cuando el usuario inicia sesión, cierra sesión, o el token se renueva
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
             if (session?.user) {
+                // Obtener el rol del usuario desde la tabla usuarios
+                const { data: perfil } = await supabase
+                    .from('usuarios')
+                    .select('rol')
+                    .eq('id', session.user.id)
+                    .single()
+
                 setUsuario({
                     id: session.user.id,
                     email: session.user.email,
-                    nombre: session.user.user_metadata?.nombre || session.user.email
+                    nombre: session.user.user_metadata?.nombre || session.user.email,
+                    rol: perfil?.rol ?? 'cliente'
                 })
             } else {
                 setUsuario(null)

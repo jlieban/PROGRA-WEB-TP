@@ -39,6 +39,7 @@ export default function Header({ totalItems, onOpenCarrito }) {
                         <li><Link href="/#inicio" className="nav-link">Inicio</Link></li>
                         <li><Link href="/#sabores" className="nav-link">Sabores</Link></li>
                         {usuario && <li><Link href="/ordenes" className="nav-link">Órdenes</Link></li>}
+                        {usuario?.rol === 'admin' && <li><Link href="/admin" className="nav-link">Admin</Link></li>}
                         <li><Link href="/#contacto" className="nav-link">Contacto</Link></li>
                         <li className="nav-usuario" ref={dropdownRef}>
                             {usuario ? (
