@@ -23,7 +23,9 @@ export default function Header({ totalItems, onOpenCarrito }) {
     }, [])
 
     async function cerrarSesion() {
-        await logout()
+        try {
+            await logout()
+        } catch (_) {}
         window.location.href = '/'
     }
 

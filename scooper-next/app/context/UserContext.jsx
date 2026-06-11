@@ -9,22 +9,9 @@ export function UserProvider({ children }) {
     const [usuario, setUsuario] = useState(undefined)
 
     useEffect(() => {
-        // Leer la sesión activa al montar el componente
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            if (session?.user) {
-                setUsuario({
-                    id: session.user.id,
-                    email: session.user.email,
-                    nombre: session.user.user_metadata?.nombre || session.user.email,
-                    rol: 'cliente'
-                })
-            } else {
-                setUsuario(null)
-            }
-        })
-
-        // Escuchar cambios de sesión en tiempo real:
-        // dispara cuando el usuario inicia sesión, cierra sesión, o el token se renueva
+        // onAuthStateChange dispara INITIAL_SESSION al montar (equivalente a getSession),
+        // además de LOGIN, LOGOUT y renovación de token.
+        // Usar solo esto evita la race condition entre getSession y onAuthStateChange.
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
             if (session?.user) {
                 // Setear usuario inmediatamente para no bloquear el login
