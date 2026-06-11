@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { client, Payment } from '@/lib/mercadopago'
-import { supabaseAdmin } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase-admin'
 
 // GET - Verificación del endpoint por Mercado Pago
 export async function GET() {

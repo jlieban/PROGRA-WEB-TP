@@ -17,9 +17,3 @@ export function createAuthClient(token) {
     })
 }
 
-// Cliente admin con service role key: bypasea RLS.
-// Usar solo en rutas de servidor donde no hay JWT de usuario (ej: webhooks).
-export const supabaseAdmin = createClient(
-    supabaseUrl,
-    process.env.SUPABASE_SERVICE_ROLE_KEY
-)
