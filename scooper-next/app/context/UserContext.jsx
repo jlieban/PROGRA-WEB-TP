@@ -24,19 +24,25 @@ export function UserProvider({ children }) {
         // dispara cuando el usuario inicia sesión, cierra sesión, o el token se renueva
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
             if (session?.user) {
-                // Obtener el rol del usuario desde la tabla usuarios
-                const { data: perfil } = await supabase
-                    .from('usuarios')
-                    .select('rol')
-                    .eq('id', session.user.id)
-                    .single()
-
+                // Setear usuario inmediatamente para no bloquear el login
                 setUsuario({
                     id: session.user.id,
                     email: session.user.email,
                     nombre: session.user.user_metadata?.nombre || session.user.email,
-                    rol: perfil?.rol ?? 'cliente'
+                    rol: 'cliente'
                 })
+                // Obtener el rol real en segundo plano
+                try {
+                    const { data: perfil } = await supabase
+                        .from('usuarios')
+                        .select('rol')
+                        .eq('id', session.user.id)
+                        .single()
+
+                    if (perfil?.rol) {
+                        setUsuario(prev => prev ? { ...prev, rol: perfil.rol } : prev)
+                    }
+                } catch (_) {}
             } else {
                 setUsuario(null)
             }
