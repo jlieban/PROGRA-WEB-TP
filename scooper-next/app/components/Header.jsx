@@ -38,6 +38,7 @@ export default function Header({ totalItems, onOpenCarrito }) {
                     <ul className="nav-menu">
                         <li><Link href="/#inicio" className="nav-link">Inicio</Link></li>
                         <li><Link href="/#sabores" className="nav-link">Sabores</Link></li>
+                        {usuario && <li><Link href="/ordenes" className="nav-link">Órdenes</Link></li>}
                         <li><Link href="/#contacto" className="nav-link">Contacto</Link></li>
                         <li className="nav-usuario" ref={dropdownRef}>
                             {usuario ? (
