@@ -21,16 +21,14 @@ export function UserProvider({ children }) {
                     nombre: session.user.user_metadata?.nombre || session.user.email,
                     rol: 'cliente'
                 })
-                // Obtener el rol real en segundo plano
+                // Obtener el rol real via API (usa supabaseAdmin, sin problemas de RLS)
                 try {
-                    const { data: perfil } = await supabase
-                        .from('usuarios')
-                        .select('rol')
-                        .eq('id', session.user.id)
-                        .single()
-
-                    if (perfil?.rol) {
-                        setUsuario(prev => prev ? { ...prev, rol: perfil.rol } : prev)
+                    const res = await fetch('/api/me', {
+                        headers: { Authorization: `Bearer ${session.access_token}` }
+                    })
+                    if (res.ok) {
+                        const { rol } = await res.json()
+                        if (rol) setUsuario(prev => prev ? { ...prev, rol } : prev)
                     }
                 } catch (_) {}
             } else {

@@ -10,10 +10,8 @@ export default function Admin() {
     const { usuario, logout } = useUser()
     const router = useRouter()
 
-    async function cerrarSesion() {
-        try {
-            await logout()
-        } catch (_) {}
+    function cerrarSesion() {
+        logout().catch(() => {})
         window.location.href = '/'
     }
     const [tab, setTab] = useState('ordenes')

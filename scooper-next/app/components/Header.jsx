@@ -20,10 +20,8 @@ export default function Header({ totalItems, onOpenCarrito }) {
         return () => document.removeEventListener('mousedown', handleClickAfuera)
     }, [])
 
-    async function cerrarSesion() {
-        try {
-            await logout()
-        } catch (_) {}
+    function cerrarSesion() {
+        logout().catch(() => {})   // fire & forget, no bloquea la navegación
         window.location.href = '/'
     }
 
