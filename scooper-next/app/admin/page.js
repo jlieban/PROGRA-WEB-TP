@@ -11,7 +11,9 @@ export default function Admin() {
     const router = useRouter()
 
     function cerrarSesion() {
-        logout().catch(() => {})
+        Object.keys(localStorage)
+            .filter(k => k.startsWith('sb-'))
+            .forEach(k => localStorage.removeItem(k))
         window.location.href = '/'
     }
     const [tab, setTab] = useState('ordenes')

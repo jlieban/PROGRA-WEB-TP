@@ -21,7 +21,10 @@ export default function Header({ totalItems, onOpenCarrito }) {
     }, [])
 
     function cerrarSesion() {
-        logout().catch(() => {})   // fire & forget, no bloquea la navegación
+        // Borra los tokens de Supabase directamente de localStorage (sin esperar red)
+        Object.keys(localStorage)
+            .filter(k => k.startsWith('sb-'))
+            .forEach(k => localStorage.removeItem(k))
         window.location.href = '/'
     }
 
