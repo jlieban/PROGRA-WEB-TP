@@ -38,19 +38,24 @@ export default function Admin() {
 
     async function cargarDatos() {
         setCargando(true)
-        const token = await getToken()
-        const headers = { Authorization: `Bearer ${token}` }
+        try {
+            const token = await getToken()
+            const headers = { Authorization: `Bearer ${token}` }
 
-        const [resOrdenes, resProductos] = await Promise.all([
-            fetch('/api/admin/ordenes', { headers }),
-            fetch('/api/admin/productos', { headers }),
-        ])
+            const [resOrdenes, resProductos] = await Promise.all([
+                fetch('/api/admin/ordenes', { headers }),
+                fetch('/api/admin/productos', { headers }),
+            ])
 
-        if (resOrdenes.status === 403) { router.push('/'); return }
+            if (resOrdenes.status === 403) { router.push('/'); return }
 
-        setOrdenes(await resOrdenes.json())
-        setProductos(await resProductos.json())
-        setCargando(false)
+            setOrdenes(await resOrdenes.json())
+            setProductos(await resProductos.json())
+        } catch (e) {
+            setError('Error al cargar el panel. Intentá recargar la página.')
+        } finally {
+            setCargando(false)
+        }
     }
 
     async function actualizarEstadoOrden(id, estado) {
@@ -103,7 +108,10 @@ export default function Admin() {
         setForm({ nombre: '', descripcion: '', precio: '', stock: '', imagen: '' })
     }
 
+    if (usuario === undefined) return null
+    if (usuario === null) return null
     if (cargando) return <main className="ordenes-container"><p className="ordenes-cargando">Cargando panel...</p></main>
+    if (error) return <main className="ordenes-container"><p className="ordenes-cargando">{error}</p></main>
 
     return (
         <main className="admin-container">
