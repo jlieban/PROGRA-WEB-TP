@@ -43,13 +43,10 @@ export default function Header({ totalItems, onOpenCarrito }) {
                         <li><a href="/#contacto" className="nav-link">Contacto</a></li>
                         <li className="nav-usuario">
                             {usuario ? (
-                                // Usuario logueado: nombre + botón cerrar sesión directo
-                                <>
-                                    <span className="nav-usuario-nombre">{usuario.nombre}</span>
-                                    <button className="btn-cerrar-sesion" onClick={cerrarSesion}>
-                                        Cerrar sesión
-                                    </button>
-                                </>
+                                // Usuario logueado: solo botón cerrar sesión
+                                <button className="btn-cerrar-sesion" onClick={cerrarSesion}>
+                                    Cerrar sesión
+                                </button>
                             ) : (
                                 // Sin sesión: dropdown con login y registro
                                 <div ref={dropdownRef}>
