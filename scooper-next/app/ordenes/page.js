@@ -14,13 +14,14 @@ export default function Ordenes() {
     const [error, setError] = useState(null)
 
     useEffect(() => {
-        // Si no hay usuario, redirigir al login
-        if (usuario === null && !cargando) {
+        // Si el usuario no está logueado, redirigir al login
+        if (usuario === null) {
             router.push('/login')
             return
         }
 
-        if (!usuario) return
+        // Todavía cargando la sesión
+        if (usuario === undefined) return
 
         async function cargarOrdenes() {
             try {

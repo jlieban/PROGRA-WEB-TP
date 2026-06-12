@@ -127,8 +127,6 @@ export function CarritoProvider({ children }) {
     }
 
     async function finalizarCompra() {
-    console.log('CLICK EN FINALIZAR COMPRA')
-
     if (carrito.length === 0) {
         mostrarToast('El carrito está vacío')
         return false
