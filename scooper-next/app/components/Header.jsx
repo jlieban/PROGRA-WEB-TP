@@ -39,7 +39,7 @@ export default function Header({ totalItems, onOpenCarrito }) {
                         <li><Link href="/#inicio" className="nav-link">Inicio</Link></li>
                         <li><Link href="/#sabores" className="nav-link">Sabores</Link></li>
                         {usuario && <li><Link href="/ordenes" className="nav-link">Órdenes</Link></li>}
-                        {usuario?.rol === 'admin' && <li><Link href="/admin" className="nav-link">Admin</Link></li>}
+                        {usuario?.rol === 'admin' && <li><a href="/admin" className="nav-link">Admin</a></li>}
                         <li><a href="/#contacto" className="nav-link">Contacto</a></li>
                         <li className="nav-usuario">
                             {usuario ? (
