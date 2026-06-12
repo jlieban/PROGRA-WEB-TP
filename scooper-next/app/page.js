@@ -52,6 +52,16 @@ export default function Home() {
         cargarProductos()
     }, []) // ← este array vacío es CLAVE: dice "ejecutar solo al montar"
 
+    // Una vez que el contenido cargó, scrollear al hash de la URL si existe.
+    // Necesario porque la página es client-side: cuando el navegador procesa
+    // el hash (ej: /#sabores), el elemento todavía no existe en el DOM.
+    useEffect(() => {
+        if (!cargando && window.location.hash) {
+            const el = document.querySelector(window.location.hash)
+            if (el) el.scrollIntoView({ behavior: 'smooth' })
+        }
+    }, [cargando])
+
     return (
         <main>
             <Hero />
