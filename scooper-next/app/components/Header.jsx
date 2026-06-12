@@ -2,15 +2,12 @@
 
 import Link from 'next/link'
 import { useState, useEffect, useRef } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
 import { useUser } from '../context/UserContext'
 
 export default function Header({ totalItems, onOpenCarrito }) {
     const { usuario, logout } = useUser()
     const [dropdownAbierto, setDropdownAbierto] = useState(false)
     const dropdownRef = useRef(null)
-    const pathname = usePathname()
-    const router = useRouter()
 
     // Cierra el dropdown si el usuario hace clic afuera
     useEffect(() => {
@@ -24,23 +21,10 @@ export default function Header({ totalItems, onOpenCarrito }) {
     }, [])
 
     function cerrarSesion() {
-        // Borra los tokens de Supabase directamente de localStorage (sin esperar red)
         Object.keys(localStorage)
             .filter(k => k.startsWith('sb-'))
             .forEach(k => localStorage.removeItem(k))
         window.location.href = '/'
-    }
-
-    // Si ya estamos en la home: scroll suave sin cambiar la URL.
-    // Si estamos en otra página: navegación completa para que el navegador
-    // maneje el scroll al hash de forma nativa (router.push no siempre scrollea).
-    function irASeccion(e, seccionId) {
-        e.preventDefault()
-        if (pathname === '/') {
-            document.getElementById(seccionId)?.scrollIntoView({ behavior: 'smooth' })
-        } else {
-            window.location.href = `/#${seccionId}`
-        }
     }
 
     return (
@@ -51,11 +35,10 @@ export default function Header({ totalItems, onOpenCarrito }) {
                 </div>
                 <nav>
                     <ul className="nav-menu">
-                        <li><a href="/#inicio" className="nav-link" onClick={e => irASeccion(e, 'inicio')}>Inicio</a></li>
-                        <li><a href="/#sabores" className="nav-link" onClick={e => irASeccion(e, 'sabores')}>Sabores</a></li>
+                        <li><a href="/" className="nav-link">Inicio</a></li>
+                        <li><a href="/#sabores" className="nav-link">Sabores</a></li>
                         {usuario && <li><Link href="/ordenes" className="nav-link">Órdenes</Link></li>}
-
-                        <li><a href="/#contacto" className="nav-link" onClick={e => irASeccion(e, 'contacto')}>Contacto</a></li>
+                        <li><a href="/#contacto" className="nav-link">Contacto</a></li>
                         <li className="nav-usuario">
                             {usuario ? (
                                 // Usuario logueado: solo botón cerrar sesión
