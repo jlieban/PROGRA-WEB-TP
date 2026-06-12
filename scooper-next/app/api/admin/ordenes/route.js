@@ -25,7 +25,7 @@ export async function GET(request) {
 
     const { data, error } = await supabaseAdmin
         .from('ordenes')
-        .select('*, orden_items(*, productos(nombre)), usuarios(email)')
+        .select('*, orden_items(*, productos(nombre))')
         .order('created_at', { ascending: false })
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })

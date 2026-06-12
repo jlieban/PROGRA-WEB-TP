@@ -47,7 +47,7 @@ export default function Admin() {
                 fetch('/api/admin/productos', { headers }),
             ])
 
-            if (resOrdenes.status === 403) { router.push('/'); return }
+            if (resOrdenes.status === 403) { window.location.href = '/'; return }
 
             setOrdenes(await resOrdenes.json())
             setProductos(await resProductos.json())
@@ -143,7 +143,7 @@ export default function Admin() {
                             <tbody>
                                 {ordenes.map(orden => (
                                     <tr key={orden.id}>
-                                        <td>{orden.usuarios?.email ?? '—'}</td>
+                                        <td>{orden.usuario_id?.slice(0, 8)}…</td>
                                         <td>{new Date(orden.created_at).toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
                                         <td>${orden.total?.toLocaleString('es-AR')}</td>
                                         <td className="admin-items">
