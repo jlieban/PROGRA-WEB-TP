@@ -35,7 +35,7 @@ export default function Header({ totalItems, onOpenCarrito }) {
                 </div>
                 <nav>
                     <ul className="nav-menu">
-                        <li><Link href="/" className="nav-link">Inicio</Link></li>
+                        <li><a href="/" className="nav-link">Inicio</a></li>
                         <li><a href="/#sabores" className="nav-link">Sabores</a></li>
                         {usuario && <li><Link href="/ordenes" className="nav-link">Órdenes</Link></li>}
                         <li><a href="/#contacto" className="nav-link">Contacto</a></li>
