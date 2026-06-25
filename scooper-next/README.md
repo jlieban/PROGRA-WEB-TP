@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SCOOPER — Helados Artesanales 🍦
 
-## Getting Started
+E-commerce de helados artesanales desarrollado como trabajo práctico de Programación Web (ITBA, 2026).
 
-First, run the development server:
+**Deploy:** [scooper-prograwebtp.vercel.app](https://scooper-prograwebtp.vercel.app)
+
+---
+
+## Tecnologías
+
+- **Next.js 16** — framework full-stack con App Router
+- **React 19** — UI con componentes y hooks
+- **Supabase** — base de datos PostgreSQL + autenticación
+- **Mercado Pago** — integración de pagos y webhooks
+- **Vercel** — deploy y CI/CD
+
+---
+
+## Funcionalidades
+
+- Catálogo de productos con detalle individual
+- Carrito de compras persistente por usuario
+- Registro e inicio de sesión con roles (`cliente` / `admin`)
+- Checkout con integración a Mercado Pago
+- Webhook para actualización automática del estado de la orden al recibir confirmación de pago
+- Panel de administración con CRUD completo de productos y gestión de órdenes
+- Historial de órdenes por usuario
+
+---
+
+## Estructura del proyecto
+
+```
+scooper-next/
+├── app/
+│   ├── api/              # API Routes (Next.js)
+│   │   ├── admin/        # Gestión de productos y órdenes (solo admin)
+│   │   ├── auth/         # Login, registro y verificación de rol
+│   │   ├── carrito/      # CRUD del carrito
+│   │   ├── checkout/     # Creación de orden con validación de stock
+│   │   ├── pagos/        # Preferencia de pago y confirmación
+│   │   ├── productos/    # Catálogo público
+│   │   ├── ordenes/      # Órdenes del usuario autenticado
+│   │   └── webhooks/     # Notificaciones de Mercado Pago
+│   ├── components/       # Componentes reutilizables
+│   ├── context/          # CartContext y UserContext
+│   ├── admin/            # Panel de administración
+│   ├── checkout/         # Página de checkout
+│   ├── login/ y registro/
+│   ├── ordenes/          # Historial de compras
+│   └── producto/[id]/    # Detalle de producto
+├── lib/
+│   ├── supabase.js       # Cliente público de Supabase
+│   ├── supabase-admin.js # Cliente admin (server-side)
+│   └── mercadopago.js    # Cliente de Mercado Pago
+└── public/               # Imágenes de productos
+```
+
+---
+
+## Correr localmente
+
+### 1. Clonar el repositorio
+
+```bash
+git clone git@github.com:jlieban/PROGRA-WEB-TP.git
+cd PROGRA-WEB-TP/scooper-next
+```
+
+### 2. Instalar dependencias
+
+```bash
+npm install
+```
+
+### 3. Configurar variables de entorno
+
+Crear un archivo `.env.local` con las siguientes variables:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=tu_url_de_supabase
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=tu_clave_publica_supabase
+MERCADOPAGO_ACCESS_TOKEN=tu_access_token_mp
+NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY=tu_public_key_mp
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+### 4. Correr el servidor de desarrollo
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abrir [http://localhost:3000](http://localhost:3000) en el navegador.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Etapas del proyecto
 
-## Learn More
+El TP se desarrolló en tres etapas progresivas:
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **HTML + CSS + JS vanilla** — landing semántica, carrito con DOM dinámico, fetch a JSON local
+2. **React** — migración a componentes, useState/useEffect, props y context
+3. **Next.js** — App Router, API Routes, integración con Supabase y Mercado Pago
