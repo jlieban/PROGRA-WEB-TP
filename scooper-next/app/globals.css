@@ -148,6 +148,30 @@ body {
     color: var(--dorado);
 }
 
+.btn-panel-admin {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--carbon);
+    color: var(--blanco);
+    border: 1px solid var(--carbon);
+    padding: 0.4rem 0.9rem;
+    font-family: var(--fuente-cuerpo);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: var(--radio);
+    transition: background var(--transicion), border-color var(--transicion);
+}
+
+.btn-panel-admin:hover {
+    background: var(--dorado);
+    border-color: var(--dorado);
+    color: var(--blanco);
+}
+
 .btn-usuario {
     background: none;
     border: 1px solid var(--borde);

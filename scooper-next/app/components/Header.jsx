@@ -38,9 +38,6 @@ export default function Header({ totalItems, onOpenCarrito }) {
                         <li><a href="/" className="nav-link">Inicio</a></li>
                         <li><a href="/#sabores" className="nav-link">Sabores</a></li>
                         {usuario && <li><Link href="/ordenes" className="nav-link">Órdenes</Link></li>}
-                        {usuario?.rol === 'admin' && (
-                            <li><Link href="/admin" className="nav-link">Panel admin</Link></li>
-                        )}
                         <li><a href="/#contacto" className="nav-link">Contacto</a></li>
                         <li className="nav-usuario">
                             {usuario ? (
@@ -76,6 +73,15 @@ export default function Header({ totalItems, onOpenCarrito }) {
                         </li>
                     </ul>
                 </nav>
+                {usuario?.rol === 'admin' && (
+                    <Link href="/admin" className="btn-panel-admin">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                            <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                        </svg>
+                        Admin
+                    </Link>
+                )}
                 <button className="carrito-btn" onClick={onOpenCarrito} aria-label="Abrir carrito">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                         <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
