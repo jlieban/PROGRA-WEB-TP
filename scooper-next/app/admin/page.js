@@ -70,21 +70,31 @@ export default function Admin() {
     }
 
     async function guardarProducto() {
+        if (!form.nombre || !form.precio) {
+            alert('Nombre y precio son obligatorios')
+            return
+        }
         const token = await getToken()
         const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
         const body = JSON.stringify({ ...form, precio: Number(form.precio), stock: Number(form.stock) })
 
-        if (editando) {
-            await fetch(`/api/admin/productos/${editando}`, { method: 'PUT', headers, body })
-            setProductos(prev => prev.map(p => p.id === editando ? { ...p, ...form, precio: Number(form.precio), stock: Number(form.stock) } : p))
-        } else {
-            const res = await fetch('/api/admin/productos', { method: 'POST', headers, body })
-            const nuevo = await res.json()
-            setProductos(prev => [...prev, nuevo])
+        try {
+            if (editando) {
+                const res = await fetch(`/api/admin/productos/${editando}`, { method: 'PUT', headers, body })
+                if (!res.ok) { const e = await res.json(); alert('Error: ' + (e.error ?? res.status)); return }
+                setProductos(prev => prev.map(p => p.id === editando ? { ...p, ...form, precio: Number(form.precio), stock: Number(form.stock) } : p))
+            } else {
+                const res = await fetch('/api/admin/productos', { method: 'POST', headers, body })
+                if (!res.ok) { const e = await res.json(); alert('Error: ' + (e.error ?? res.status)); return }
+                const nuevo = await res.json()
+                setProductos(prev => [...prev, nuevo])
+            }
+            setEditando(null)
+            setNuevoProducto(false)
+            setForm({ nombre: '', descripcion: '', precio: '', stock: '', imagen: '' })
+        } catch (e) {
+            alert('Error al guardar: ' + e.message)
         }
-        setEditando(null)
-        setNuevoProducto(false)
-        setForm({ nombre: '', descripcion: '', precio: '', stock: '', imagen: '' })
     }
 
     async function eliminarProducto(id) {
