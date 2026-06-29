@@ -144,7 +144,7 @@ export default function Admin() {
                     {ordenes.length === 0 ? (
                         <p className="admin-vacio">No hay órdenes todavía.</p>
                     ) : (
-                        <table className="admin-tabla">
+                        <div className="admin-tabla-wrapper"><table className="admin-tabla">
                             <thead>
                                 <tr>
                                     <th>Usuario</th>
@@ -178,7 +178,7 @@ export default function Admin() {
                                     </tr>
                                 ))}
                             </tbody>
-                        </table>
+                        </table></div>
                     )}
                 </div>
             )}
@@ -204,7 +204,7 @@ export default function Admin() {
                         </div>
                     )}
 
-                    <table className="admin-tabla">
+                    <div className="admin-tabla-wrapper"><table className="admin-tabla">
                         <thead>
                             <tr>
                                 <th>Nombre</th>
@@ -226,7 +226,7 @@ export default function Admin() {
                                 </tr>
                             ))}
                         </tbody>
-                    </table>
+                    </table></div>
                 </div>
             )}
         </main>

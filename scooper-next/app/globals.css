@@ -961,8 +961,15 @@ body {
     gap: 1.5rem;
 }
 
+.admin-tabla-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 .admin-tabla {
     width: 100%;
+    min-width: 500px;
     border-collapse: collapse;
     font-size: 0.85rem;
 }
