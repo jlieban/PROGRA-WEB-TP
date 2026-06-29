@@ -3,6 +3,7 @@ import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
+import { useCarrito } from '../context/CartContext'
 
 function PagoCompletadoContent() {
     const searchParams = useSearchParams()
@@ -10,6 +11,7 @@ function PagoCompletadoContent() {
     const externalReference = searchParams.get('external_reference')
     const [confirmado, setConfirmado] = useState(false)
     const [errorConfirm, setErrorConfirm] = useState(null)
+    const { setCelebrando } = useCarrito()
 
     useEffect(() => {
         if (!paymentId || !externalReference) return
@@ -32,6 +34,7 @@ function PagoCompletadoContent() {
 
             if (res.ok) {
                 setConfirmado(true)
+                setCelebrando(true)
             } else {
                 const data = await res.json()
                 setErrorConfirm(data.error)
