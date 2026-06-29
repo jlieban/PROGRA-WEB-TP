@@ -36,14 +36,17 @@ function TarjetaProducto({ producto, cantidadEnCarrito, onVerDetalle, onAgregar,
                             <button
                                 className="btn-cantidad"
                                 onClick={() => onActualizarCantidad(producto.id, cantidadEnCarrito + 1)}
+                                disabled={producto.stock === 0}
                             >+</button>
                         </div>
                     ) : (
                         <button
                             className="btn-agregar"
                             onClick={(e) => { e.stopPropagation(); onAgregar(producto.id); }}
+                            disabled={producto.stock === 0}
+                            style={producto.stock === 0 ? { opacity: 0.45, cursor: 'not-allowed' } : {}}
                         >
-                            Agregar al carrito
+                            {producto.stock === 0 ? 'Sin stock' : 'Agregar al carrito'}
                         </button>
                     )}
                     <button

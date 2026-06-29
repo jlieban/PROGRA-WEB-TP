@@ -53,13 +53,24 @@ function ModalProducto({ producto, onClose, onAgregar }) {
                             <span>{cantidad}</span>
                             <button
                                 className="btn-cantidad"
-                                onClick={() => setCantidad(c => c + 1)}
+                                onClick={() => setCantidad(c => Math.min(producto.stock, c + 1))}
+                                disabled={cantidad >= producto.stock}
                             >+</button>
                         </div>
+                        {producto.stock > 0 ? (
+                            <span className="modal-stock-info">Stock: {producto.stock}</span>
+                        ) : (
+                            <span className="modal-stock-agotado">Sin stock</span>
+                        )}
                     </div>
 
-                    <button className="btn-comprar" onClick={confirmar}>
-                        Agregar al carrito
+                    <button
+                        className="btn-comprar"
+                        onClick={confirmar}
+                        disabled={producto.stock === 0}
+                        style={producto.stock === 0 ? { opacity: 0.45, cursor: 'not-allowed' } : {}}
+                    >
+                        {producto.stock === 0 ? 'Sin stock' : 'Agregar al carrito'}
                     </button>
                 </div>
             </div>

@@ -27,7 +27,12 @@ function ModalOrdenes({ abierto, ordenes, onClose }) {
                             <div key={idx} className="orden-item">
                                 <div className="orden-header">
                                     <span className="orden-numero">Orden #{ordenes.length - idx}</span>
-                                    <span className="orden-fecha">{orden.fecha}</span>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                                        <span className={`orden-estado orden-estado-${(orden.estado || 'pendiente').replace(' ', '-')}`}>
+                                            {orden.estado || 'pendiente'}
+                                        </span>
+                                        <span className="orden-fecha">{orden.fecha}</span>
+                                    </div>
                                 </div>
                                 <ul className="orden-productos">
                                     {orden.items.map(item => (
