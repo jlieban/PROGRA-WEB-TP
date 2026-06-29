@@ -82,7 +82,7 @@ export function CarritoProvider({ children }) {
         // Si el usuario está logueado, sincronizar también con la BD
         const token = await getToken()
         if (token) {
-            await fetch('/api/carrito', {
+            const res = await fetch('/api/carrito', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -90,6 +90,13 @@ export function CarritoProvider({ children }) {
                 },
                 body: JSON.stringify({ producto_id: producto.id, cantidad })
             })
+            // Guardar el carritoId devuelto para que actualizarCantidad y eliminarDelCarrito puedan usarlo
+            if (res.ok) {
+                const guardado = await res.json()
+                setCarrito(prev => prev.map(i =>
+                    i.id === producto.id ? { ...i, carritoId: guardado.id } : i
+                ))
+            }
         }
     }
 
