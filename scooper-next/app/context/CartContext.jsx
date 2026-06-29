@@ -153,6 +153,16 @@ export function CarritoProvider({ children }) {
             return false
         }
 
+        // Verificar que no sea admin
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) { mostrarToast('Iniciá sesión para confirmar la compra'); return false }
+        const meRes = await fetch('/api/me', { headers: { Authorization: `Bearer ${token}` } })
+        const { rol } = await meRes.json()
+        if (rol === 'admin') {
+            mostrarToast('Los administradores no pueden realizar compras')
+            return false
+        }
+
         // Enviamos los items del carrito local (siempre correcto)
         // El servidor valida precios desde la BD, pero confía en las cantidades del cliente
         const res = await fetch('/api/checkout', {
