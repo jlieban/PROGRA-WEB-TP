@@ -42,6 +42,7 @@ export function CarritoProvider({ children }) {
                         precio: item.productos.precio,
                         imagen: item.productos.imagen,
                         descripcion: item.productos.descripcion,
+                        stock: item.productos.stock,
                         cantidad: item.cantidad,
                         carritoId: item.id  // ID del registro en la tabla carrito
                     }))

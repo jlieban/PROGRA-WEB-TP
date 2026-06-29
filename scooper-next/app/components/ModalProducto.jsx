@@ -17,7 +17,7 @@ export default function ModalProducto({ producto, onClose, onAgregar }) {
     if (!producto) return null
 
     function confirmar() {
-        onAgregar(producto.id, cantidad)
+        onAgregar(producto, cantidad)
         onClose()
     }
 
@@ -42,7 +42,7 @@ export default function ModalProducto({ producto, onClose, onAgregar }) {
                         <div className="cantidad-controles">
                             <button className="btn-cantidad" onClick={() => setCantidad(c => Math.max(1, c - 1))}>−</button>
                             <span>{cantidad}</span>
-                            <button className="btn-cantidad" onClick={() => setCantidad(c => c + 1)}>+</button>
+                            <button className="btn-cantidad" onClick={() => setCantidad(c => producto.stock !== undefined ? Math.min(producto.stock, c + 1) : c + 1)}>+</button>
                         </div>
                     </div>
                     <button className="btn-comprar" onClick={confirmar}>Agregar al carrito</button>
