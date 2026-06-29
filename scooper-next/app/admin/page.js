@@ -27,8 +27,9 @@ export default function Admin() {
 
     useEffect(() => {
         if (usuario === undefined) return // todavía cargando
-        if (usuario === null) return // sesión cerrada, el header redirige
+        if (usuario === null) { router.push('/login'); return }
         if (usuario.rol === 'admin') cargarDatos()
+        else router.push('/') // usuario sin permiso de admin
     }, [usuario?.rol])
 
     async function getToken() {
