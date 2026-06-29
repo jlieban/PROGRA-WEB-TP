@@ -27,7 +27,9 @@ export default function TarjetaProducto({ producto, cantidadEnCarrito, onAgregar
                 <h3 className="producto-nombre">{producto.nombre}</h3>
                 <p className="producto-precio">${producto.precio.toLocaleString('es-AR')}</p>
                 <div className="tarjeta-botones">
-                    {cantidadEnCarrito > 0 ? (
+                    {producto.stock === 0 ? (
+                        <button className="btn-agregar btn-sin-stock" disabled>Sin stock</button>
+                    ) : cantidadEnCarrito > 0 ? (
                         <div className="tarjeta-cantidad">
                             <button className="btn-cantidad" onClick={() => onActualizarCantidad(producto.id, cantidadEnCarrito - 1)}>−</button>
                             <span>{cantidadEnCarrito}</span>

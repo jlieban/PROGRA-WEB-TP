@@ -496,6 +496,11 @@ body {
     border-color: var(--dorado);
 }
 
+.btn-sin-stock {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
 .btn-detalle {
     background: none;
     color: var(--gris);
