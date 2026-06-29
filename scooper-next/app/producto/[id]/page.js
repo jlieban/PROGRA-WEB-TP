@@ -4,10 +4,13 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { useCarrito } from '../../context/CartContext'
+import { useUser } from '../../context/UserContext'
 
 export default function ProductoPage() {
     const { id } = useParams()
     const { agregarAlCarrito } = useCarrito()
+    const { usuario } = useUser()
+    const esAdmin = usuario?.rol === 'admin'
     const [producto, setProducto] = useState(null)
     const [cantidad, setCantidad] = useState(1)
     const [imgError, setImgError] = useState(false)
@@ -70,15 +73,19 @@ export default function ProductoPage() {
                         <h2 className="modal-producto-nombre">{producto.nombre}</h2>
                         <p className="modal-producto-descripcion">{producto.descripcion}</p>
                         <p className="modal-producto-precio">${producto.precio.toLocaleString('es-AR')}</p>
-                        <div className="modal-producto-cantidad">
-                            <span className="modal-cantidad-label">Cantidad</span>
-                            <div className="cantidad-controles">
-                                <button className="btn-cantidad" onClick={() => setCantidad(c => Math.max(1, c - 1))}>−</button>
-                                <span>{cantidad}</span>
-                                <button className="btn-cantidad" onClick={() => setCantidad(c => c + 1)}>+</button>
-                            </div>
-                        </div>
-                        <button className="btn-comprar" onClick={confirmar}>Agregar al carrito</button>
+                        {!esAdmin && (
+                            <>
+                                <div className="modal-producto-cantidad">
+                                    <span className="modal-cantidad-label">Cantidad</span>
+                                    <div className="cantidad-controles">
+                                        <button className="btn-cantidad" onClick={() => setCantidad(c => Math.max(1, c - 1))}>−</button>
+                                        <span>{cantidad}</span>
+                                        <button className="btn-cantidad" onClick={() => setCantidad(c => Math.min(producto.stock ?? c + 1, c + 1))}>+</button>
+                                    </div>
+                                </div>
+                                <button className="btn-comprar" onClick={confirmar}>Agregar al carrito</button>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>
