@@ -25,7 +25,7 @@ export default function ModalProducto({ producto, onClose, onAgregar }) {
     }
 
     return (
-        <div className="modal" style={{ display: 'block' }} role="dialog" aria-modal="true">
+        <div className="modal" style={{ display: 'block' }} role="dialog" aria-modal="true" aria-labelledby="modal-producto-titulo">
             <div className="modal-overlay" onClick={onClose} />
             <div className="modal-producto-content">
                 <button className="cerrar modal-producto-cerrar" onClick={onClose} aria-label="Cerrar">&times;</button>
@@ -37,7 +37,7 @@ export default function ModalProducto({ producto, onClose, onAgregar }) {
                     )}
                 </div>
                 <div className="modal-producto-info">
-                    <h2 className="modal-producto-nombre">{producto.nombre}</h2>
+                    <h2 id="modal-producto-titulo" className="modal-producto-nombre">{producto.nombre}</h2>
                     <p className="modal-producto-descripcion">{producto.descripcion}</p>
                     <p className="modal-producto-precio">${producto.precio.toLocaleString('es-AR')}</p>
                     {!esAdmin && (
@@ -45,9 +45,9 @@ export default function ModalProducto({ producto, onClose, onAgregar }) {
                             <div className="modal-producto-cantidad">
                                 <span className="modal-cantidad-label">Cantidad</span>
                                 <div className="cantidad-controles">
-                                    <button className="btn-cantidad" onClick={() => setCantidad(c => Math.max(1, c - 1))}>−</button>
-                                    <span>{cantidad}</span>
-                                    <button className="btn-cantidad" onClick={() => setCantidad(c => producto.stock !== undefined ? Math.min(producto.stock, c + 1) : c + 1)}>+</button>
+                                    <button className="btn-cantidad" aria-label="Quitar una unidad" onClick={() => setCantidad(c => Math.max(1, c - 1))}>−</button>
+                                    <span aria-live="polite">{cantidad}</span>
+                                    <button className="btn-cantidad" aria-label="Agregar una unidad" onClick={() => setCantidad(c => producto.stock !== undefined ? Math.min(producto.stock, c + 1) : c + 1)}>+</button>
                                 </div>
                             </div>
                             <button className="btn-comprar" onClick={confirmar}>Agregar al carrito</button>

@@ -11,7 +11,7 @@ export default function TarjetaProducto({ producto, cantidadEnCarrito, onAgregar
 
     return (
         <div className="tarjeta-producto">
-            <Link href={`/producto/${producto.id}`} className="producto-imagen-wrapper">
+            <Link href={`/producto/${producto.id}`} className="producto-imagen-wrapper" aria-label={`Ver detalle de ${producto.nombre}`}>
                 {imgError ? (
                     <div className="producto-imagen-placeholder">{producto.nombre.charAt(0)}</div>
                 ) : (
@@ -35,9 +35,9 @@ export default function TarjetaProducto({ producto, cantidadEnCarrito, onAgregar
                             <button className="btn-agregar btn-sin-stock" disabled>Sin stock</button>
                         ) : cantidadEnCarrito > 0 ? (
                             <div className="tarjeta-cantidad">
-                                <button className="btn-cantidad" onClick={() => onActualizarCantidad(producto.id, cantidadEnCarrito - 1)}>−</button>
-                                <span>{cantidadEnCarrito}</span>
-                                <button className="btn-cantidad" onClick={() => onActualizarCantidad(producto.id, cantidadEnCarrito + 1)}>+</button>
+                                <button className="btn-cantidad" aria-label={`Quitar una unidad de ${producto.nombre}`} onClick={() => onActualizarCantidad(producto.id, cantidadEnCarrito - 1)}>−</button>
+                                <span aria-live="polite">{cantidadEnCarrito}</span>
+                                <button className="btn-cantidad" aria-label={`Agregar una unidad de ${producto.nombre}`} onClick={() => onActualizarCantidad(producto.id, cantidadEnCarrito + 1)}>+</button>
                             </div>
                         ) : (
                             <button className="btn-agregar" onClick={() => onAgregar(producto)}>
