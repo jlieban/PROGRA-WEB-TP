@@ -124,8 +124,7 @@ export default function Admin() {
         setForm({ nombre: '', descripcion: '', precio: '', stock: '', imagen: '' })
     }
 
-    if (usuario === undefined) return null
-    if (usuario === null) return null
+    if (usuario === undefined || usuario === null) return <main className="ordenes-container"><p className="ordenes-cargando">Redirigiendo...</p></main>
     if (cargando) return <main className="ordenes-container"><p className="ordenes-cargando">Cargando panel...</p></main>
     if (error) return <main className="ordenes-container"><p className="ordenes-cargando">{error}</p></main>
 
