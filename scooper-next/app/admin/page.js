@@ -128,7 +128,6 @@ export default function Admin() {
         <main className="admin-container">
             <div className="admin-header">
                 <h1 className="admin-titulo">Panel de administración</h1>
-                <button onClick={cerrarSesion} className="btn-cancelar">Cerrar sesión</button>
             </div>
 
             <div className="admin-tabs">
