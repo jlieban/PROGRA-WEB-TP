@@ -57,6 +57,14 @@ export function CarritoProvider({ children }) {
     }, [])
 
     async function agregarAlCarrito(producto, cantidad = 1) {
+        // Validar stock antes de agregar
+        const itemEnCarrito = carrito.find(i => i.id === producto.id)
+        const cantidadActual = itemEnCarrito?.cantidad ?? 0
+        if (producto.stock !== undefined && cantidadActual + cantidad > producto.stock) {
+            mostrarToast(`Stock insuficiente (disponible: ${producto.stock - cantidadActual})`)
+            return
+        }
+
         // Actualizar estado local inmediatamente (para que se vea rápido en la UI)
         setCarrito(prev => {
             const item = prev.find(i => i.id === producto.id)
@@ -104,6 +112,12 @@ export function CarritoProvider({ children }) {
     async function actualizarCantidad(idProducto, cantidad) {
         if (cantidad < 1) {
             eliminarDelCarrito(idProducto)
+            return
+        }
+        // Validar stock
+        const item = carrito.find(i => i.id === idProducto)
+        if (item?.stock !== undefined && cantidad > item.stock) {
+            mostrarToast(`Stock insuficiente (disponible: ${item.stock})`)
             return
         }
         // Actualizar estado local inmediatamente
