@@ -40,12 +40,12 @@ export default function Header({ totalItems, onOpenCarrito }) {
                         {usuario && <li><Link href="/ordenes" className="nav-link">Órdenes</Link></li>}
                         <li><a href="/#contacto" className="nav-link">Contacto</a></li>
                         <li className="nav-usuario">
-                            {usuario ? (
-                                // Usuario logueado: solo botón cerrar sesión
+                            {usuario && usuario.rol !== 'admin' ? (
+                                // Usuario cliente logueado: botón cerrar sesión
                                 <button className="btn-cerrar-sesion" onClick={cerrarSesion}>
                                     Cerrar sesión
                                 </button>
-                            ) : (
+                            ) : !usuario ? (
                                 // Sin sesión: dropdown con login y registro
                                 <div ref={dropdownRef}>
                                     <button
@@ -74,13 +74,16 @@ export default function Header({ totalItems, onOpenCarrito }) {
                     </ul>
                 </nav>
                 {usuario?.rol === 'admin' && (
-                    <Link href="/admin" className="btn-panel-admin">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-                            <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
-                        </svg>
-                        Admin
-                    </Link>
+                    <div className="admin-header-actions">
+                        <Link href="/admin" className="btn-panel-admin">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                                <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                            </svg>
+                            Admin
+                        </Link>
+                        <button className="btn-cerrar-sesion" onClick={cerrarSesion}>Cerrar sesión</button>
+                    </div>
                 )}
                 <button className="carrito-btn" onClick={onOpenCarrito} aria-label="Abrir carrito">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">

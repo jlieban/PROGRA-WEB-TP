@@ -148,6 +148,12 @@ body {
     color: var(--dorado);
 }
 
+.admin-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 .btn-panel-admin {
     display: flex;
     align-items: center;

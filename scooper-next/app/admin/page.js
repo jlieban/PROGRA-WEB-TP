@@ -99,12 +99,17 @@ export default function Admin() {
 
     async function eliminarProducto(id) {
         if (!confirm('¿Eliminar este producto?')) return
-        const token = await getToken()
-        await fetch(`/api/admin/productos/${id}`, {
-            method: 'DELETE',
-            headers: { Authorization: `Bearer ${token}` }
-        })
-        setProductos(prev => prev.filter(p => p.id !== id))
+        try {
+            const token = await getToken()
+            const res = await fetch(`/api/admin/productos/${id}`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            if (!res.ok) { const e = await res.json(); alert('Error al eliminar: ' + (e.error ?? res.status)); return }
+            setProductos(prev => prev.filter(p => Number(p.id) !== Number(id)))
+        } catch (e) {
+            alert('Error al eliminar: ' + e.message)
+        }
     }
 
     function abrirEdicion(producto) {
