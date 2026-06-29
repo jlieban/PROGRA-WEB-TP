@@ -40,13 +40,12 @@ export default function Header({ totalItems, onOpenCarrito }) {
                         {usuario && <li><Link href="/ordenes" className="nav-link">Órdenes</Link></li>}
                         <li><a href="/#contacto" className="nav-link">Contacto</a></li>
                         <li className="nav-usuario">
-                            {usuario && usuario.rol !== 'admin' ? (
-                                // Usuario cliente logueado: botón cerrar sesión
+                            {usuario && usuario.rol !== 'admin' && (
                                 <button className="btn-cerrar-sesion" onClick={cerrarSesion}>
                                     Cerrar sesión
                                 </button>
-                            ) : !usuario ? (
-                                // Sin sesión: dropdown con login y registro
+                            )}
+                            {!usuario && (
                                 <div ref={dropdownRef}>
                                     <button
                                         className="btn-usuario"
