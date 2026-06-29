@@ -30,7 +30,7 @@ export default function Admin() {
         if (usuario === null) { router.push('/login'); return }
         if (usuario.rol === 'admin') cargarDatos()
         else router.push('/') // usuario sin permiso de admin
-    }, [usuario?.rol])
+    }, [usuario])
 
     async function getToken() {
         const { data: { session } } = await supabase.auth.getSession()
