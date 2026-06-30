@@ -57,54 +57,33 @@ function CheckoutContent() {
         }
     }
 
-    if (!orden) return <p style={{ padding: '2rem' }}>Cargando...</p>
+    if (!orden) return <p className="ordenes-cargando">Cargando...</p>
 
     return (
-        <main style={{ maxWidth: 500, margin: '2rem auto', padding: '0 1rem' }}>
-            <h1>Checkout</h1>
+        <main className="checkout-container">
+            <h1 className="checkout-titulo">Checkout</h1>
 
-            <div style={{
-                background: '#fff',
-                borderLeft: '4px solid #3498db',
-                borderRadius: 8,
-                padding: '1.5rem',
-                marginBottom: '1.5rem',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
-            }}>
-                <p><strong>Orden #{orden.id}</strong></p>
-                <p>Estado: <span style={{ textTransform: 'capitalize' }}>{orden.estado}</span></p>
-                <p style={{ fontSize: '1.8rem', fontWeight: 'bold', marginTop: '0.5rem', color: '#2c3e50' }}>
+            <div className="checkout-card">
+                <p className="checkout-orden-id">Orden #{orden.id}</p>
+                <p className="checkout-estado">Estado: {orden.estado}</p>
+                <p className="checkout-total">
                     Total: ${orden.total?.toLocaleString('es-AR')}
                 </p>
             </div>
 
-            {error && (
-                <p style={{ color: 'red', marginBottom: '1rem' }}>{error}</p>
-            )}
+            {error && <p className="checkout-error">{error}</p>}
 
             <button
+                className={`btn-pagar${procesando || orden.estado !== 'pendiente' ? ' btn-pagar-disabled' : ''}`}
                 onClick={handlePagar}
                 disabled={procesando || orden.estado !== 'pendiente'}
-                style={{
-                    width: '100%',
-                    padding: '1rem',
-                    background: procesando || orden.estado !== 'pendiente' ? '#ccc' : '#27ae60',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: 8,
-                    fontSize: '1rem',
-                    fontWeight: 'bold',
-                    cursor: procesando ? 'not-allowed' : 'pointer'
-                }}
             >
                 {procesando ? 'Redirigiendo...' : 'Pagar con Mercado Pago'}
             </button>
 
-            <p style={{ fontSize: '0.8rem', color: '#888', textAlign: 'center', marginTop: '0.75rem' }}>
-                🔒 Pago seguro procesado por Mercado Pago
-            </p>
+            <p className="checkout-seguro">🔒 Pago seguro procesado por Mercado Pago</p>
 
-            <Link href="/ordenes" style={{ display: 'block', marginTop: '1rem', textAlign: 'center', color: '#555' }}>
+            <Link href="/ordenes" className="checkout-volver">
                 ← Volver a mis órdenes
             </Link>
         </main>
@@ -113,7 +92,7 @@ function CheckoutContent() {
 
 export default function Checkout() {
     return (
-        <Suspense fallback={<p style={{ padding: '2rem' }}>Cargando...</p>}>
+        <Suspense fallback={<p className="ordenes-cargando">Cargando...</p>}>
             <CheckoutContent />
         </Suspense>
     )

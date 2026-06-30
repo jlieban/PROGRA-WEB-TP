@@ -1133,6 +1133,108 @@ body {
     border-radius: var(--radio);
 }
 
+/* ===== CHECKOUT ===== */
+.checkout-container {
+    max-width: 500px;
+    margin: 4rem auto;
+    padding: 0 2rem;
+}
+
+.checkout-titulo {
+    font-family: var(--fuente-display);
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--carbon);
+    margin-bottom: 1.5rem;
+}
+
+.checkout-card {
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-left: 4px solid var(--dorado);
+    border-radius: var(--radio);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.checkout-orden-id {
+    font-size: 0.85rem;
+    color: var(--gris);
+    letter-spacing: 0.05em;
+}
+
+.checkout-estado {
+    font-size: 0.85rem;
+    color: var(--carbon);
+    text-transform: capitalize;
+}
+
+.checkout-total {
+    font-family: var(--fuente-display);
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--carbon);
+    margin-top: 0.5rem;
+}
+
+.checkout-error {
+    color: #b00020;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+.btn-pagar {
+    width: 100%;
+    padding: 1rem;
+    background: var(--carbon);
+    color: var(--crema);
+    border: none;
+    border-radius: var(--radio);
+    font-family: var(--fuente-cuerpo);
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 400;
+    cursor: pointer;
+    transition: background-color var(--transicion);
+}
+
+.btn-pagar:hover:not(:disabled) {
+    background-color: var(--dorado);
+}
+
+.btn-pagar-disabled,
+.btn-pagar:disabled {
+    background: var(--gris-claro);
+    color: var(--gris);
+    cursor: not-allowed;
+}
+
+.checkout-seguro {
+    font-size: 0.75rem;
+    color: var(--gris);
+    text-align: center;
+    margin-top: 0.75rem;
+    letter-spacing: 0.05em;
+}
+
+.checkout-volver {
+    display: block;
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--gris);
+    text-decoration: none;
+    transition: color var(--transicion);
+}
+
+.checkout-volver:hover {
+    color: var(--carbon);
+}
+
 /* ===== FOOTER ===== */
 .footer {
     background-color: var(--crema);
