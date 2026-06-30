@@ -10,10 +10,8 @@ export default function Admin() {
     const { usuario, logout } = useUser()
     const router = useRouter()
 
-    function cerrarSesion() {
-        Object.keys(localStorage)
-            .filter(k => k.startsWith('sb-'))
-            .forEach(k => localStorage.removeItem(k))
+    async function cerrarSesion() {
+        await supabase.auth.signOut()
         window.location.href = '/'
     }
     const [tab, setTab] = useState('ordenes')

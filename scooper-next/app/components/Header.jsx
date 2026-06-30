@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState, useEffect, useRef } from 'react'
 import { useUser } from '../context/UserContext'
+import { supabase } from '@/lib/supabase'
 
 export default function Header({ totalItems, onOpenCarrito }) {
     const { usuario, logout } = useUser()
@@ -20,10 +21,8 @@ export default function Header({ totalItems, onOpenCarrito }) {
         return () => document.removeEventListener('mousedown', handleClickAfuera)
     }, [])
 
-    function cerrarSesion() {
-        Object.keys(localStorage)
-            .filter(k => k.startsWith('sb-'))
-            .forEach(k => localStorage.removeItem(k))
+    async function cerrarSesion() {
+        await supabase.auth.signOut()
         window.location.href = '/'
     }
 
