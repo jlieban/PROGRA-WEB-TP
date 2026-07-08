@@ -28,7 +28,8 @@ App Router, API Routes propias, integración con Supabase (base de datos + auten
 - Next.js 16
 - Supabase (PostgreSQL + Auth)
 - Mercado Pago API
-- Vercel (deploy y CI/CD)
+- GitHub Actions (CI: lint y build en cada push/PR)
+- Vercel (CD: deploy automático a producción)
 
 ---
 
