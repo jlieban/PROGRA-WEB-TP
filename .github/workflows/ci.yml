@@ -3,10 +3,10 @@ name: CI
 on:
   push:
     branches: [main]
-    paths: ["scooper-next/**"]
+    paths: ["scooper-next/**", ".github/workflows/ci.yml"]
   pull_request:
     branches: [main]
-    paths: ["scooper-next/**"]
+    paths: ["scooper-next/**", ".github/workflows/ci.yml"]
 
 jobs:
   build-and-lint:
