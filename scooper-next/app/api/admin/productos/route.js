@@ -44,9 +44,19 @@ export async function POST(request) {
         return NextResponse.json({ error: 'Nombre y precio son obligatorios' }, { status: 400 })
     }
 
+    const precioNum = Number(precio)
+    const stockNum = Number(stock ?? 0)
+
+    if (Number.isNaN(precioNum) || precioNum < 0) {
+        return NextResponse.json({ error: 'El precio no puede ser negativo' }, { status: 400 })
+    }
+    if (Number.isNaN(stockNum) || stockNum < 0) {
+        return NextResponse.json({ error: 'El stock no puede ser negativo' }, { status: 400 })
+    }
+
     const { data, error } = await supabaseAdmin
         .from('productos')
-        .insert({ nombre, descripcion, precio, stock: stock ?? 0, imagen })
+        .insert({ nombre, descripcion, precio: precioNum, stock: stockNum, imagen })
         .select()
         .single()
 

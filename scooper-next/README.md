@@ -12,7 +12,8 @@ E-commerce de helados artesanales desarrollado como trabajo práctico de Program
 - **React 19** — UI con componentes y hooks
 - **Supabase** — base de datos PostgreSQL + autenticación
 - **Mercado Pago** — integración de pagos y webhooks
-- **Vercel** — deploy y CI/CD
+- **GitHub Actions** — CI (lint y build automático en cada push/PR a `main`)
+- **Vercel** — CD (deploy automático a producción tras cada push a `main`)
 
 ---
 

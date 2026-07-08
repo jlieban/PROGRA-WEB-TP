@@ -26,9 +26,19 @@ export async function PUT(request, { params }) {
     const body = await request.json()
     const { nombre, descripcion, precio, stock, imagen } = body
 
+    const precioNum = Number(precio)
+    const stockNum = Number(stock)
+
+    if (Number.isNaN(precioNum) || precioNum < 0) {
+        return NextResponse.json({ error: 'El precio no puede ser negativo' }, { status: 400 })
+    }
+    if (Number.isNaN(stockNum) || stockNum < 0) {
+        return NextResponse.json({ error: 'El stock no puede ser negativo' }, { status: 400 })
+    }
+
     const { data, error } = await supabaseAdmin
         .from('productos')
-        .update({ nombre, descripcion, precio, stock, imagen })
+        .update({ nombre, descripcion, precio: precioNum, stock: stockNum, imagen })
         .eq('id', id)
         .select()
         .single()

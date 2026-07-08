@@ -72,6 +72,10 @@ export default function Admin() {
             alert('Nombre y precio son obligatorios')
             return
         }
+        if (Number(form.precio) < 0 || Number(form.stock) < 0) {
+            alert('El precio y el stock no pueden ser negativos')
+            return
+        }
         const token = await getToken()
         const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
         const body = JSON.stringify({ ...form, precio: Number(form.precio), stock: Number(form.stock) })
@@ -190,8 +194,8 @@ export default function Admin() {
                             <h3>{editando ? 'Editar producto' : 'Nuevo producto'}</h3>
                             <div className="admin-form-grid">
                                 <input placeholder="Nombre" value={form.nombre} onChange={e => setForm(f => ({ ...f, nombre: e.target.value }))} />
-                                <input placeholder="Precio" type="number" value={form.precio} onChange={e => setForm(f => ({ ...f, precio: e.target.value }))} />
-                                <input placeholder="Stock" type="number" value={form.stock} onChange={e => setForm(f => ({ ...f, stock: e.target.value }))} />
+                                <input placeholder="Precio" type="number" min="0" value={form.precio} onChange={e => setForm(f => ({ ...f, precio: e.target.value }))} />
+                                <input placeholder="Stock" type="number" min="0" value={form.stock} onChange={e => setForm(f => ({ ...f, stock: e.target.value }))} />
                                 <input placeholder="Imagen (nombre del archivo)" value={form.imagen} onChange={e => setForm(f => ({ ...f, imagen: e.target.value }))} />
                                 <textarea placeholder="Descripción" value={form.descripcion} onChange={e => setForm(f => ({ ...f, descripcion: e.target.value }))} className="admin-textarea" />
                             </div>

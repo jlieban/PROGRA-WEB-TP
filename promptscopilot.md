@@ -131,6 +131,20 @@ PROGRA WEB TP/
 
 ---
 
+## 4. Corrección del Logo
+**Prompt:** "El logo se encuentra en el archivo LOGO.pmg"
+
+**Respuesta:** Se actualizó la referencia del logo:
+
+### Cambios realizados:
+- **index.html**: Cambié `src="Scooperslogo.png"` a `src="LOGO.png"`
+- **promptscopilot.md**: Actualicé la documentación para reflejar el cambio
+
+### Resultado:
+El logo que aparece en el header ahora es `LOGO.png` en lugar de `Scooperslogo.png`
+
+---
+
 ## 6. Migración Completa a React
 **Prompt inicial:** Conversación sobre migrar la página HTML a React con componentes modernos
 
